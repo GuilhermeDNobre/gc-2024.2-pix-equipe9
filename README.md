@@ -71,7 +71,7 @@ PIX usando Java e conceitos de POO.
    username: ${DATABASE_USERNAME}
    password: ${DATABASE_PASSWORD}
 ```
-## 🤝 Colaboradores
+<h2 id="colab">🤝 Colaboradores</h2>
 
 <table>
   <tr>
@@ -105,12 +105,6 @@ PIX usando Java e conceitos de POO.
       <a href="https://github.com/FGabriel-Lima">
         <img src="https://avatars.githubusercontent.com/u/95498571?v=4" width="100px;" alt="FGabriel-Lima Profile Picture"/><br>
         <sub><b>FGabriel-Lima</b></sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/CristianoMends">
-        <img src="https://avatars.githubusercontent.com/u/116528159?v=4" width="100px;" alt="Cristiano Mendes Profile Picture"/><br>
-        <sub><b>Cristiano Mendes</b></sub>
       </a>
     </td>
   </tr>
