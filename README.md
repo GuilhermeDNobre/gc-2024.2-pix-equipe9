@@ -78,7 +78,7 @@ PIX usando Java e conceitos de POO.
     <td align="center">
       <a href="https://github.com/CristianoMends">
         <img src="https://avatars.githubusercontent.com/u/116528159?v=4" width="100px;" alt="Cristiano Mendes Profile Picture"/><br>
-        <sub><b>Cristiano Mendes</b></sub>
+        <sub><b>CristianoMends</b></sub>
       </a>
     </td>
     <td align="center">
