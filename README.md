@@ -63,14 +63,6 @@ PIX usando Java e conceitos de POO.
 - [Gradle](https://gradle.org/install/)
 - [Postgres](https://www.postgresql.org/)
 
-<h3>Configure as variaveis de ambiente</h2>
-
-
-```yaml
-   url: ${DATABASE_URL}
-   username: ${DATABASE_USERNAME}
-   password: ${DATABASE_PASSWORD}
-```
 ## 🤝 Colaboradores
 
 <table>
