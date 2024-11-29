@@ -13,3 +13,8 @@ spring:
   flyway:
     locations: classpath:db/migration
     baseline-on-migrate: true
+
+security:
+  config:
+    key: ${JWT_SECRET}
+    expiration: 3
