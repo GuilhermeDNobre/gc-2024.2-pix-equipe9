@@ -107,7 +107,6 @@ PIX usando Java e conceitos de POO.
         <sub><b>FGabriel-Lima</b></sub>
       </a>
     </td>
-  </tr>
     <td align="center">
       <a href="https://github.com/amandadeoliveira">
         <img src="https://avatars.githubusercontent.com/u/48298630?v=4" width="100px;" alt="NdaDev Profile Picture"/><br>
