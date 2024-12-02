@@ -3,6 +3,7 @@ package com.ufc.pix.controller;
 import com.ufc.pix.dto.CreateUserDto;
 import com.ufc.pix.dto.LoginDto;
 import com.ufc.pix.dto.Token;
+import com.ufc.pix.dto.UpdateUserDto;
 import com.ufc.pix.model.User;
 import com.ufc.pix.service.AuthorizationService;
 import com.ufc.pix.service.TokenService;
@@ -49,30 +50,74 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(new Token(token));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{userId}")
     @CrossOrigin
-    public ResponseEntity<Object> getUserById(@PathVariable String id) {
-        User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    public ResponseEntity<Object> getUserById(@PathVariable("userId") String id) {
         try {
+            User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             UUID userId = UUID.fromString(id);
 
             if (!authenticatedUser.getId().equals(userId)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
             }
 
-            var user = userService.findById(userId);
+            var user = userService.getUserById(userId);
 
-            if (user == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+            if (user.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body(user.get());
             }
 
-
-
-            return ResponseEntity.status(HttpStatus.OK).body(user);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID format.");
         }
     }
 
+    @PutMapping("/{userId}")
+    @CrossOrigin
+    public ResponseEntity<Object> updateUser(@PathVariable("userId") String id, @RequestBody @Valid UpdateUserDto userDto) {
+        try {
+            User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UUID userId = UUID.fromString(id);
+
+            if (!authenticatedUser.getId().equals(userId)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            }
+
+            var user = userService.getUserById(userId);
+
+            if (user.isPresent()) {
+                userService.updateUser(userId, userDto);
+                return ResponseEntity.status(HttpStatus.OK).body("User updated .");
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID format.");
+        }
+    }
+
+    @DeleteMapping("/{userId}")
+    @CrossOrigin
+    public ResponseEntity<Object> deleteUser(@PathVariable("userId") String id) {
+        try {
+            User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UUID userId = UUID.fromString(id);
+
+            if (!authenticatedUser.getId().equals(userId)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            }
+
+            var user = userService.getUserById(userId);
+
+            if (user.isPresent()) {
+                userService.deleteUser(userId);
+                return ResponseEntity.status(HttpStatus.OK).body("User deleted.");
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID format.");
+        }
+    }
 }

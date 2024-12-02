@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     private final String[] allowedForLoggedIn = {//List of free routes for logged in users
             "/properties",
-            "/users/{id}"
+            "/users/{userId}"
     };
     private final String[] freeRoutes = {//List of free routes
             "/users/login",

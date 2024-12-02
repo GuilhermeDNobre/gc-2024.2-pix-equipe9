@@ -24,7 +24,7 @@ public class User implements UserDetails {
     @Column(name = "user_id", nullable = false)
     private UUID id;
     private String name;
-    private String taxId;
+    private String cpf;
     private String email;
     private String password;
     private LocalDate birthDate;
@@ -32,9 +32,9 @@ public class User implements UserDetails {
 
     private String access = "USER";
 
-    public User(String name, String email, String password, String taxId, LocalDate birthDate){
+    public User(String name, String email, String password, String cpf, LocalDate birthDate){
         setName(name);
-        setTaxId(taxId);
+        setCpf(cpf);
         setEmail(email);
         setPassword(password);
         setBirthDate(birthDate);
