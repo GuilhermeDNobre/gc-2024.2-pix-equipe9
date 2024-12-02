@@ -21,9 +21,9 @@ public class CreateUserDto {
     @NotBlank(message = "Password is mandatory")
     @Size(min = 6, message = "Password should have at least 6 characters")
     private String password;
-    @NotBlank(message = "Tax ID is mandatory")
-    @Pattern(regexp = "\\d{11}", message = "Tax ID should have 11 digits")
-    private String taxId; //= CPF in Brazil, SSN in the United States, NIF in Portugal
+    @NotBlank(message = "Cpf is mandatory")
+    @Pattern(regexp = "\\d{11}", message = "Cpf should have 11 digits")
+    private String cpf; //= CPF in Brazil, SSN in the United States, NIF in Portugal
     @NotNull(message = "Birth Date is mandatory")
     private LocalDate birthDate;
 
@@ -32,7 +32,7 @@ public class CreateUserDto {
                 getName(),
                 getEmail(),
                 getPassword(),
-                getTaxId(),
+                getCpf(),
                 getBirthDate()
         );
     }
