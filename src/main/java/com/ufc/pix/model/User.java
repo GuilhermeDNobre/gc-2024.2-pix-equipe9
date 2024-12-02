@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 @Table(name="Users")
@@ -49,5 +48,4 @@ public class User implements UserDetails {
     public String getUsername() {
         return this.email;
     }
-    
 }
