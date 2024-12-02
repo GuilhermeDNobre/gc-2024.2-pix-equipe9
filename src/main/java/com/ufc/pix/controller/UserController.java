@@ -13,7 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
@@ -44,6 +47,32 @@ public class UserController {
 
         var token = this.tokenService.generateToken( (User) auth.getPrincipal() );
         return ResponseEntity.status(HttpStatus.OK).body(new Token(token));
+    }
+
+    @GetMapping("/{id}")
+    @CrossOrigin
+    public ResponseEntity<Object> getUserById(@PathVariable String id) {
+        User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        try {
+            UUID userId = UUID.fromString(id);
+
+            if (!authenticatedUser.getId().equals(userId)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            }
+
+            var user = userService.findById(userId);
+
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+            }
+
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(user);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID format.");
+        }
     }
 
 }

@@ -22,7 +22,8 @@ public class SecurityConfig {
     SecurityFilter securityFilter;
 
     private final String[] allowedForLoggedIn = {//List of free routes for logged in users
-            "/properties"
+            "/properties",
+            "/users/{id}"
     };
     private final String[] freeRoutes = {//List of free routes
             "/users/login",
