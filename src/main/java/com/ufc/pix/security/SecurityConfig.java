@@ -27,7 +27,9 @@ public class SecurityConfig {
     };
     private final String[] freeRoutes = {//List of free routes
             "/users/login",
-            "/users"
+            "/users",
+            "/accounts",
+            "/accounts/{agency}/{number}"
     };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
