@@ -22,7 +22,7 @@ public class Account {
 
     @ManyToOne
     @JoinColumn(name = "idusers", nullable = false)
-    private User idUser;
+    private User User;
 
     private String institution;
     private Integer accountAgency;
@@ -32,13 +32,13 @@ public class Account {
     private Integer fourDigitPassword;
     private Integer sixDigitPassword;
 
-    public Account(User User, String institution, Integer accountAgency, Integer accountNumber, String accountType, Float balance, Integer fourDigitPassword, Integer sixDigitPassword) {
+    public Account(User User, String institution, Integer accountAgency, Integer accountNumber, String accountType, Integer fourDigitPassword, Integer sixDigitPassword) {
         setUser(User);
         setInstitution(institution);
         setAccountAgency(accountAgency);
         setAccountNumber(accountNumber);
         setAccountType(accountType);
-        setBalance(balance);
+        setBalance(0.0f);
         setFourDigitPassword(fourDigitPassword);
         setSixDigitPassword(sixDigitPassword);
     }
