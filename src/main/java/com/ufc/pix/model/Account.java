@@ -20,20 +20,25 @@ public class Account {
     @Column(name = "idaccounts", nullable = false)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "idusers", nullable = false)
-    private User User;
-
+    @JoinColumn(name = "user_id", nullable = false)
+    @Column(name = "idusers", nullable = false)
+    private UUID idUser;
+    @Column(nullable = false)
     private String institution;
+    @Column(name = "accountAgency", nullable = false)
     private Integer accountAgency;
+    @Column(name = "accountNumber", nullable = false)
     private Integer accountNumber;
+    @Column(name = "accountType", nullable = false)
     private String accountType;
     private Float balance;
+    @Column(name= "fourDigitPassword",nullable = false)
     private Integer fourDigitPassword;
+    @Column(name = "sixDigitPassword",nullable = false)
     private Integer sixDigitPassword;
 
-    public Account(User User, String institution, Integer accountAgency, Integer accountNumber, String accountType, Integer fourDigitPassword, Integer sixDigitPassword) {
-        setUser(User);
+    public Account(UUID User, String institution, Integer accountAgency, Integer accountNumber, String accountType, Integer fourDigitPassword, Integer sixDigitPassword) {
+        setIdUser(User);
         setInstitution(institution);
         setAccountAgency(accountAgency);
         setAccountNumber(accountNumber);
