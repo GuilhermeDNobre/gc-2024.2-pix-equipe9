@@ -12,11 +12,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class StatementDto {
     @NotNull(message = "Sender account id is required")
-    private UUID senderAccountId;
+    private UUID sender_id;
 
     @NotNull(message = "Receiver account id is required")
-    private UUID receiverAccountId;
+    private UUID receiver_id;
 
     @NotNull(message = "Value is required")
     private Float value;
+
 }
