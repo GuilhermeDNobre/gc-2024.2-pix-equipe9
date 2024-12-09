@@ -6,6 +6,8 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.model.User;
+import com.ufc.pix.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,10 @@ public class TokenService {
     private String secretKey;
     @Value("${security.config.expiration}")
     private int expireTime;
+
+    @Autowired
+    private UserRepository userRepository;
+
     public String generateToken(User user){
         try{
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
@@ -47,5 +53,19 @@ public class TokenService {
         }catch (JWTVerificationException exception){
             return "";
         }
+    }
+
+    public User getUserFromToken(String token) {
+
+        String email = validateToken(token);
+        if (email.isEmpty()) {
+            throw new BusinessException("Invalid or expired token");
+        }
+
+        var user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new BusinessException("User not found");
+        }
+        return (User) user;
     }
 }
