@@ -1,7 +1,10 @@
 package com.ufc.pix.controller;
 
 import com.ufc.pix.dto.AccountDTO;
+import com.ufc.pix.dto.StatementDto;
 import com.ufc.pix.model.Account;
+import com.ufc.pix.model.Statement;
+import com.ufc.pix.repository.StatementRepository;
 import com.ufc.pix.service.AccountService;
 import com.ufc.pix.repository.AccountRepository;
 import jakarta.validation.Valid;
@@ -22,12 +25,33 @@ public class AccountController {
     AccountRepository accountRepository;
     @Autowired
     AccountService accountService;
+    @Autowired
+    StatementRepository statementRepository;
 
     @PostMapping("/accounts")
     public ResponseEntity<Account> createAccount(@RequestBody @Valid AccountDTO accountDTO) {
         var account = new Account();
         BeanUtils.copyProperties(accountDTO, account);
         return ResponseEntity.status(HttpStatus.CREATED).body(accountRepository.save(account));
+    }
+
+    @PostMapping("/accounts/transfer")
+    public ResponseEntity<String> transferMoney(@RequestBody @Valid StatementDto statementDto){
+        var statement = new Statement();
+        BeanUtils.copyProperties(statementDto, statement);
+        Account account = accountRepository.findAccountsById(statementDto.getSender_id());
+        Account accountReceiver = accountRepository.findAccountsById(statementDto.getReceiver_id());
+        if(account.getBalance() < statementDto.getValue()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("O valor é menor que o saldo em conta");
+        }
+        statementRepository.save(statement);   
+        var newBalanceSender = account.getBalance() - statementDto.getValue();
+        var newBalanceReceiver = accountReceiver.getBalance() + statementDto.getValue();
+        account.setBalance(newBalanceSender);
+        accountRepository.save(account);
+        accountReceiver.setBalance(newBalanceReceiver);
+        accountRepository.save(accountReceiver);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Sua transferência foi concluída e seu novo saldo é de: " + newBalanceSender);
     }
 
     @GetMapping("/accounts")
