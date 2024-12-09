@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Table(name="Users")
@@ -28,6 +29,9 @@ public class User implements UserDetails {
     private String password;
     private LocalDate birthDate;
     @Column(length = 10,name = "access",nullable = false)
+
+    @OneToMany(mappedBy = "user")
+    private List<PixKey> pixKeys;
 
     private String access = "USER";
 
