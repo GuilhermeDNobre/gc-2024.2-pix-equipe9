@@ -1,7 +1,9 @@
 package com.ufc.pix.controller;
 
 import com.ufc.pix.dto.AccountDTO;
+import com.ufc.pix.dto.StatementDto;
 import com.ufc.pix.model.Account;
+import com.ufc.pix.model.Statement;
 import com.ufc.pix.service.AccountService;
 import com.ufc.pix.repository.AccountRepository;
 import jakarta.validation.Valid;
@@ -29,6 +31,8 @@ public class AccountController {
         BeanUtils.copyProperties(accountDTO, account);
         return ResponseEntity.status(HttpStatus.CREATED).body(accountRepository.save(account));
     }
+
+
 
     @GetMapping("/accounts")
     public ResponseEntity<List<Account>> getAllAccounts(){
