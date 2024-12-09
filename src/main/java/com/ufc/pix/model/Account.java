@@ -21,7 +21,7 @@ public class Account {
     private UUID id;
 
     @JoinColumn(name = "user_id", nullable = false)
-    @Column(name = "idusers", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private UUID idUser;
     @Column(nullable = false)
     private String institution;

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class AccountController {
@@ -31,21 +32,22 @@ public class AccountController {
 
     @GetMapping("/accounts")
     public ResponseEntity<List<Account>> getAllAccounts(){
-        return ResponseEntity.status(HttpStatus.OK).body(accountRepository.findAll());
+        List<Account> list =accountService.getAllAccounts();
+        return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
-    @GetMapping("/accounts/{agency}/{number}")
-    public ResponseEntity<Object> getOneAccount(@PathVariable Integer agency, @PathVariable Integer number) {
-        Optional<Account> account0 = Optional.ofNullable(accountRepository.findByAccountAgencyAndAccountNumber(agency, number));
+    @GetMapping("/accounts/{id}")
+    public ResponseEntity<Object> getOneAccount(@PathVariable(value = "id") UUID id) {
+        Optional<Account> account0 = Optional.ofNullable(accountRepository.findAccountsById(id));
         if (account0.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found");
         }
         return ResponseEntity.status(HttpStatus.OK).body(account0.get());
     }
 
-    @PutMapping("/accounts/{agency}/{number}")
-    public ResponseEntity<Object> updateAccount(@PathVariable Integer agency, @PathVariable Integer number, @RequestBody @Valid AccountDTO accountDTO) {
-        Optional<Account> account0 = Optional.ofNullable(accountRepository.findByAccountAgencyAndAccountNumber(agency, number));
+    @PutMapping("/accounts/{id}")
+    public ResponseEntity<Object> updateAccount(@PathVariable UUID id, @RequestBody @Valid AccountDTO accountDTO) {
+        Optional<Account> account0 = Optional.ofNullable(accountRepository.findAccountsById(id));
         if (account0.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found");
         }
@@ -54,9 +56,9 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(accountRepository.save(account));
     }
 
-    @DeleteMapping("/accounts/{agency}/{number}")
-    public ResponseEntity<Object> deleteAccount(@PathVariable Integer agency, @PathVariable Integer number) {
-        Optional<Account> account0 = Optional.ofNullable(accountRepository.findByAccountAgencyAndAccountNumber(agency, number));
+    @DeleteMapping("/accounts/{id}")
+    public ResponseEntity<Object> deleteAccount(@PathVariable UUID id) {
+        Optional<Account> account0 = Optional.ofNullable(accountRepository.findAccountsById(id));
         if (account0.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found");
         }

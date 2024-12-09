@@ -6,5 +6,5 @@ import com.ufc.pix.model.Account;
 import java.util.UUID;
 
 public interface AccountRepository extends JpaRepository<Account, UUID> {
-    Account findByAccountAgencyAndAccountNumber(Integer accountAgency, Integer accountNumber);
+    Account findAccountsById(UUID id);
 }

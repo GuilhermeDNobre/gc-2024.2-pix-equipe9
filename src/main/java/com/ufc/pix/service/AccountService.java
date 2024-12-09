@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AccountService {
@@ -26,12 +27,12 @@ public class AccountService {
         return accountRepository.findAll();
     }
 
-    public Optional<Account> getOneAccount(Integer agency, Integer number) {
-        return Optional.ofNullable(accountRepository.findByAccountAgencyAndAccountNumber(agency, number));
+    public Optional<Account> getOneAccount(UUID id) {
+        return Optional.ofNullable(accountRepository.findAccountsById(id));
     }
 
-    public Optional<Account> updateAccount(Integer agency, Integer number, AccountDTO accountDTO) {
-        Optional<Account> accountOptional = Optional.ofNullable(accountRepository.findByAccountAgencyAndAccountNumber(agency, number));
+    public Optional<Account> updateAccount(UUID id, AccountDTO accountDTO) {
+        Optional<Account> accountOptional = Optional.ofNullable(accountRepository.findAccountsById(id));
         if (accountOptional.isPresent()) {
             var account = accountOptional.get();
             BeanUtils.copyProperties(accountDTO, account);
@@ -40,8 +41,8 @@ public class AccountService {
         return Optional.empty();
     }
 
-    public boolean deleteAccount(Integer agency, Integer number) {
-        Optional<Account> accountOptional = Optional.ofNullable(accountRepository.findByAccountAgencyAndAccountNumber(agency, number));
+    public boolean deleteAccount(UUID id) {
+        Optional<Account> accountOptional = Optional.ofNullable(accountRepository.findAccountsById(id));
         if (accountOptional.isPresent()) {
             accountRepository.delete(accountOptional.get());
             return true;
