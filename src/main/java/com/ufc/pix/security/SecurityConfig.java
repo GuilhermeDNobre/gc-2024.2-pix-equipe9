@@ -27,7 +27,8 @@ public class SecurityConfig {
     };
     private final String[] freeRoutes = {//List of free routes
             "/users/login",
-            "/users"
+            "/users",
+            "/accounts"
     };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,6 +37,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, freeRoutes).permitAll()//autorizando Post para rotas
+                        .requestMatchers(HttpMethod.GET, "/accounts/").permitAll()
                         .requestMatchers(allowedForLoggedIn).hasRole("USER")//autorizando todas as rotas para logados
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class) //adiciona filtro antes
