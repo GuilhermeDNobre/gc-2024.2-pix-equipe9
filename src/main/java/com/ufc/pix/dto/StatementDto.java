@@ -16,4 +16,7 @@ public class StatementDto {
 
     @NotNull(message = "Receiver account id is required")
     private UUID receiverAccountId;
+
+    @NotNull(message = "Value is required")
+    private Float value;
 }
