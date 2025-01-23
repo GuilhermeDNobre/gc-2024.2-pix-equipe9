@@ -3,7 +3,6 @@ package com.ufc.pix.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,22 +22,31 @@ public class SecurityConfig {
 
     private final String[] allowedForLoggedIn = {//List of free routes for logged in users
             "/users/{userId}",
-            "/pix/**",
-            "/accounts/**"
+            "/pix/**"
     };
     private final String[] freeRoutes = {//List of free routes
             "/users/login",
             "/users",
+            "/accounts",
+            "/accounts/transfer",
+            "/h2/**"
     };
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "default-src 'self'; " +
+                                        "script-src 'self' 'unsafe-inline'; " +
+                                        "style-src 'self' 'unsafe-inline'; " +
+                                        "frame-ancestors 'self'")) // Permite scripts e estilos inline
+                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, freeRoutes).permitAll()//autorizando Post para rotas
-                        .requestMatchers(allowedForLoggedIn).hasRole("USER")//autorizando todas as rotas para logados
+                        /*.requestMatchers(freeRoutes).permitAll()//autorizando para rotas
+                        .requestMatchers(allowedForLoggedIn).hasRole("USER")//autorizando todas as rotas para logados*/
+                        .requestMatchers("/**").permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class) //adiciona filtro antes
                 .build();

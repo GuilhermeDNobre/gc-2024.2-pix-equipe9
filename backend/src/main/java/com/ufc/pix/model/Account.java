@@ -19,7 +19,6 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "idaccounts", nullable = false)
     private UUID id;
-
     @JoinColumn(name = "user_id", nullable = false)
     @Column(name = "user_id", nullable = false)
     private UUID idUser;

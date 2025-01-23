@@ -1,6 +1,6 @@
 package com.ufc.pix.model;
 
-import com.ufc.pix.dto.PixKeyView;
+import com.ufc.pix.dto.ViewPixKeyDto;
 import com.ufc.pix.enumeration.KeyType;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,7 +29,7 @@ public class PixKey {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public PixKeyView toView() {
-        return new PixKeyView(this.key, this.type, this.date);
+    public ViewPixKeyDto toView() {
+        return new ViewPixKeyDto(this.key, this.type, this.date);
     }
 }
