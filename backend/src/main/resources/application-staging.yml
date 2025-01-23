@@ -1,0 +1,36 @@
+#o perfil staging está configurado para executar um banco postgres na maquina host
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pix_db  # URL do banco
+    username: ${DB_USERNAME}  # Usuário do banco
+    password: ${DB_PASSWORD}  # Senha do banco
+    driver-class-name: org.postgresql.Driver
+    initialize: false  # Evita inicialização automática no ambiente de staging
+  sql:
+    init:
+      mode: never  # SQL inicial não deve ser executado automaticamente
+  jpa:
+    show-sql: false  # Não exibe SQL no console em staging
+    generate-ddl: false  # Desabilitado em favor do Flyway
+    database-platform: org.hibernate.dialect.PostgreSQLDialect  # Dialeto específico para PostgreSQL
+    properties:
+      hibernate:
+        format_sql: false  # Não formata SQL no console em staging
+      jakarta:
+        persistence:
+          schema-generation.scripts.action: none  # Sem geração automática de scripts
+    hibernate:
+      ddl-auto: validate  # Valida o esquema sem criar ou alterar tabelas
+  flyway:
+    enabled: true  # Flyway ativo em staging
+    locations: classpath:db/migration/postgres  # Caminho para scripts de migração
+    baseline-on-migrate: true  # Permite migração em bancos existentes
+  h2:
+    console:
+      enabled: false  # Desativa o console H2 em staging (não usado aqui)
+
+security:
+  config:
+    key: ${JWT_SECRET}  # Chave configurada via variável de ambiente
+    expiration: 3  # Tempo de expiração do token (em horas)
