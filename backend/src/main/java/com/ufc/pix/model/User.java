@@ -1,5 +1,6 @@
 package com.ufc.pix.model;
 
+import com.ufc.pix.enumeration.UserAccess;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,12 +29,15 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private LocalDate birthDate;
-    @Column(length = 10,name = "access",nullable = false)
+
+    private Boolean active;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserAccess access;
 
     @OneToMany(mappedBy = "user")
     private List<PixKey> pixKeys;
-
-    private String access = "USER";
 
     public User(String name, String email, String password, String cpf, LocalDate birthDate){
         setName(name);
@@ -45,7 +49,10 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        if (this.access.equals(UserAccess.USER)){ return List.of(new SimpleGrantedAuthority("ROLE_USER"));}
+        else if (this.access.equals(UserAccess.ADMIN)){return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));}
+
+        return List.of();
     }
 
     @Override

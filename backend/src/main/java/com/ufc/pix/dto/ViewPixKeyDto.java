@@ -9,12 +9,12 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class PixKeyView {
+public class ViewPixKeyDto {
 
     private String key;
     private KeyType type;
     private LocalDate date;
-    public PixKeyView(String key, KeyType type, LocalDate date) {
+    public ViewPixKeyDto(String key, KeyType type, LocalDate date) {
         this.key = key;
         this.type = type;
         this.date = date;

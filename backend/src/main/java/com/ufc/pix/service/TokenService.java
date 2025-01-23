@@ -62,10 +62,8 @@ public class TokenService {
             throw new BusinessException("Invalid or expired token");
         }
 
-        var user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new BusinessException("User not found");
-        }
+        var user = userRepository.findByEmail(email).orElseThrow(
+                ()-> new BusinessException("User not found"));
         return (User) user;
     }
 }

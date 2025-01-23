@@ -46,7 +46,7 @@ public class UserTests {
             }
         """;
 
-        when(userService.createUser(any(CreateUserDto.class))).thenReturn(new User());
+        when(userService.create(any(CreateUserDto.class))).thenReturn(new User());
 
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
