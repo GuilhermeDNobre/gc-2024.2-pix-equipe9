@@ -54,6 +54,7 @@ public class PixKeyController {
 
     @PostMapping("/validate")
     public ResponseEntity<?> validatePixKey(@RequestParam String key) {
+//      https://dict-np-h.pi.rsfn.net.br:16532/api-np/v2/keys/check
         try {
             PixKey pixKey = pixKeyService.validatePixKey(key);
             return ResponseEntity.ok(pixKey.toView());

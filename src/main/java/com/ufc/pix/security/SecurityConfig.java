@@ -23,14 +23,14 @@ public class SecurityConfig {
 
     private final String[] allowedForLoggedIn = {//List of free routes for logged in users
             "/users/{userId}",
-            "/pix/**"
+            "/pix/**",
+            "/accounts/**"
     };
     private final String[] freeRoutes = {//List of free routes
             "/users/login",
             "/users",
-            "/accounts",
-            "/accounts/transfer"
     };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
