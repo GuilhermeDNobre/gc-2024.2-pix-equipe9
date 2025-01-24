@@ -28,8 +28,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
+      - name: Grant execution permission for gradlew
+        run: chmod +x ./gradlew
+        working-directory: backend
+
       - name: Build application with Gradle
         run: ./gradlew clean build -x test
+        working-directory: backend
 
       - name: Start Docker Compose
         run: docker-compose up -d
