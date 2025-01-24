@@ -24,7 +24,7 @@ services:
       DB_URL: jdbc:postgresql://postgres-pix-db:5432/pix_db  # URL de conexão com o banco de dados
       DB_USERNAME: postgres               # Nome de usuário do banco de dados
       DB_PASSWORD: qwe123                 # Senha padrão para autenticação
-      JWT_SECRET: ${JWT_SECRET}   # Chave secreta para geração de tokens JWT
+      JWT_SECRET: ${JWT_SECRET:secrect-key}   # Chave secreta para geração de tokens JWT
     depends_on:
       - db                                # Garante que o serviço do banco de dados esteja disponível antes da API iniciar
     ports:
