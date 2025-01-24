@@ -57,9 +57,11 @@ jobs:
 
       - name: Check Docker logs
         run: docker-compose logs
-
+        
       - name: Run tests
         run: ./gradlew test
+        working-directory: backend
+
 
       - name: Stop Docker Compose
         if: always()
