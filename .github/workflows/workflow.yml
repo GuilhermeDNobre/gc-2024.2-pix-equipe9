@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  build:
+  CI-Pipeline:
     runs-on: ubuntu-latest
     env:
       JWT_SECRET: qwe123
@@ -57,7 +57,7 @@ jobs:
 
       - name: Check Docker logs
         run: docker-compose logs
-        
+
       - name: Run tests
         run: ./gradlew test
         working-directory: backend
