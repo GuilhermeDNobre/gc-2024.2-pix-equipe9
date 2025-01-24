@@ -2,12 +2,14 @@
 FROM gradle:8.11.1-jdk17 AS BUILD
 WORKDIR /usr/app/
 
-# Copia os arquivos necessários para o build
-COPY build.gradle settings.gradle /usr/app/
-COPY src /usr/app/src
+# Copia todos os arquivos do projeto para o container
+COPY . /usr/app/
 
-# Realiza o build da aplicação
-RUN gradle clean build -x test
+# Garante que o gradlew seja executável
+RUN chmod +x gradlew
+
+# Realiza o build usando o gradlew (não diretamente o gradle)
+RUN ./gradlew clean build -x test
 
 # Etapa 2: Runtime
 FROM eclipse-temurin:17-jre AS RUNTIME
