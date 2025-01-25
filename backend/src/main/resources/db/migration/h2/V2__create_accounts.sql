@@ -6,6 +6,7 @@ CREATE TABLE accounts (
     balance DOUBLE DEFAULT 0.0 NOT NULL,
     password VARCHAR NOT NULL,
     user_id UUID UNIQUE,
+    status VARCHAR,
     CONSTRAINT fk_account_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
