@@ -1,12 +1,11 @@
 package com.ufc.pix.controller;
 
-import com.ufc.pix.dto.ViewPixKeyDto;
 import com.ufc.pix.enumeration.KeyType;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.model.PixKey;
 import com.ufc.pix.model.User;
 import com.ufc.pix.service.PixKeyService;
-import com.ufc.pix.service.TokenService;
+import com.ufc.pix.service.impl.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +29,7 @@ public class PixKeyController {
         User user = tokenService.getUserFromToken(token.substring(7));
 
         PixKey pixKey = pixKeyService.generateRandomPixKey(user);
-        return ResponseEntity.ok(pixKey.getKey());
+        return ResponseEntity.ok(pixKey.getKeyValue());
     }
 
     @PostMapping("/register")
@@ -46,7 +45,7 @@ public class PixKeyController {
         }
 
         PixKey pixKey = pixKeyService.registerPixKey(user, type, key);
-        return ResponseEntity.ok(pixKey.getKey());
+        return ResponseEntity.ok(pixKey.getKeyValue());
     }
 
     @PostMapping("/validate")
@@ -56,15 +55,7 @@ public class PixKeyController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<ViewPixKeyDto>> getAll(
-            @RequestHeader("Authorization") String token
-    ) {
-        User user = tokenService.getUserFromToken(token.substring(7));
-        return ResponseEntity
-                .ok()
-                .body(this.pixKeyService.findAllByUser(user.getId())
-                        .stream()
-                        .map(PixKey::toView)
-                        .toList());
+    public ResponseEntity<List<PixKey>> getAll() {
+        return ResponseEntity.ok(this.pixKeyService.getAll());
     }
 }

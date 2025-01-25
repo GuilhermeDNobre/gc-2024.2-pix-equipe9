@@ -27,11 +27,11 @@ public class PixKeyServiceImpl implements PixKeyService {
     @Override
     public PixKey generateRandomPixKey(User user) {
         PixKey pixKey = new PixKey();
-        pixKey.setUser(user);
+        pixKey.setAccount(user.getAccount());
         pixKey.setType(KeyType.RANDOM);
         pixKey.setDate(LocalDate.now());
 
-        pixKey.setKey(generateRandomKey());
+        pixKey.setKeyValue(generateRandomKey());
 
         return pixKeyRepository.save(pixKey);
     }
@@ -39,15 +39,15 @@ public class PixKeyServiceImpl implements PixKeyService {
     @Override
     public PixKey registerPixKey(User user, KeyType type, String key) {
 
-        boolean hasPixKeyOfType = pixKeyRepository.existsByUserAndType(user, type);
+        boolean hasPixKeyOfType = pixKeyRepository.existsByType(type);
         if (hasPixKeyOfType) {
             throw new BusinessException("Usuário já possui uma chave PIX cadastrada do tipo " + type);
         }
 
         PixKey pixKey = new PixKey();
-        pixKey.setUser(user);
+        pixKey.setAccount(user.getAccount());
         pixKey.setType(type);
-        pixKey.setKey(key);
+        pixKey.setKeyValue(key);
         pixKey.setDate(LocalDate.now());
         return pixKeyRepository.save(pixKey);
     }
@@ -67,7 +67,7 @@ public class PixKeyServiceImpl implements PixKeyService {
 
     @Override
     public PixKey validatePixKey(String key) {
-        Optional<PixKey> pixKey = pixKeyRepository.findByKey(key);
+        Optional<PixKey> pixKey = pixKeyRepository.findByKeyValue(key);
         if (pixKey.isPresent()) {
             return pixKey.get();
         } else {
@@ -76,8 +76,14 @@ public class PixKeyServiceImpl implements PixKeyService {
     }
 
     @Override
-    public List<PixKey> findAllByUser(UUID id) {
-        return pixKeyRepository.findByUserId(id);
+    public PixKey getById(UUID id) {
+        return null;
     }
+
+    @Override
+    public List<PixKey> getAll() {
+        return this.pixKeyRepository.findAll();
+    }
+
 
 }

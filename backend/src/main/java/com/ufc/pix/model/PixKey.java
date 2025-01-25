@@ -12,24 +12,28 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@Table(name = "pix_keys")
 public class PixKey {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    private String key;
-
+    private String keyValue;
     @Enumerated(EnumType.STRING)
     private KeyType type;
-
     private LocalDate date;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     public ViewPixKeyDto toView() {
-        return new ViewPixKeyDto(this.key, this.type, this.date);
+        return new ViewPixKeyDto(
+                getId(),
+                getKeyValue(),
+                this.type,
+                this.date,
+                getAccount().getId()
+        );
     }
 }
