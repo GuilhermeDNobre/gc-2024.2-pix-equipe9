@@ -1,17 +1,17 @@
 package com.ufc.pix.controller;
 
-import com.ufc.pix.dto.AccountDTO;
-import com.ufc.pix.dto.StatementDto;
+import com.ufc.pix.dto.CreateAccountDto;
+import com.ufc.pix.dto.CreateTransactionByIdDto;
+import com.ufc.pix.dto.ViewAccountDto;
 import com.ufc.pix.model.Account;
-import com.ufc.pix.model.Statement;
-import com.ufc.pix.repository.StatementRepository;
-import com.ufc.pix.service.AccountService;
+import com.ufc.pix.model.Transaction;
+import com.ufc.pix.repository.TransactionRepository;
+import com.ufc.pix.service.impl.AccountService;
 import com.ufc.pix.repository.AccountRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,24 +20,24 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
+
 public class AccountController {
     @Autowired
     AccountRepository accountRepository;
     @Autowired
     AccountService accountService;
     @Autowired
-    StatementRepository statementRepository;
+    TransactionRepository statementRepository;
 
     @PostMapping("/accounts")
-    public ResponseEntity<Account> createAccount(@RequestBody @Valid AccountDTO accountDTO) {
-        var account = new Account();
-        BeanUtils.copyProperties(accountDTO, account);
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountRepository.save(account));
+    public ResponseEntity<Void> createAccount(@RequestBody @Valid CreateAccountDto accountDTO) {
+        this.accountService.createAccount(accountDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/accounts/transfer")
-    public ResponseEntity<String> transferMoney(@RequestBody @Valid StatementDto statementDto){
-        var statement = new Statement();
+    public ResponseEntity<String> transferMoney(@RequestBody @Valid CreateTransactionByIdDto statementDto){
+        var statement = new Transaction();
         BeanUtils.copyProperties(statementDto, statement);
         Account account = accountRepository.findAccountsById(statementDto.getSender_id());
         Account accountReceiver = accountRepository.findAccountsById(statementDto.getReceiver_id());
@@ -55,9 +55,9 @@ public class AccountController {
     }
 
     @GetMapping("/accounts")
-    public ResponseEntity<List<Account>> getAllAccounts(){
+    public ResponseEntity<List<ViewAccountDto>> getAllAccounts(){
         List<Account> list =accountService.getAllAccounts();
-        return ResponseEntity.status(HttpStatus.OK).body(list);
+        return ResponseEntity.status(HttpStatus.OK).body(list.stream().map(Account::toView).toList());
     }
 
     @GetMapping("/accounts/{id}")
@@ -70,7 +70,7 @@ public class AccountController {
     }
 
     @PutMapping("/accounts/{id}")
-    public ResponseEntity<Object> updateAccount(@PathVariable UUID id, @RequestBody @Valid AccountDTO accountDTO) {
+    public ResponseEntity<Object> updateAccount(@PathVariable UUID id, @RequestBody @Valid CreateAccountDto accountDTO) {
         Optional<Account> account0 = Optional.ofNullable(accountRepository.findAccountsById(id));
         if (account0.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found");

@@ -1,12 +1,12 @@
 package com.ufc.pix.model;
 
+import com.ufc.pix.dto.ViewAccountDto;
+import com.ufc.pix.enumeration.AccountType;
 import jakarta.persistence.*;
-import java.util.UUID;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.*;
+
+import lombok.*;
 
 @Entity
 @Table(name = "accounts")
@@ -14,47 +14,39 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Account {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "idaccounts", nullable = false)
     private UUID id;
-    @JoinColumn(name = "user_id", nullable = false)
-    @Column(name = "user_id", nullable = false)
-    private UUID idUser;
-    @Column(nullable = false)
-    private String institution;
-    @Column(name = "accountAgency", nullable = false)
-    private Integer accountAgency;
-    @Column(name = "accountNumber", nullable = false)
-    private Integer accountNumber;
-    @Column(name = "accountType", nullable = false)
-    private String accountType;
-    private Float balance;
-    @Column(name= "fourDigitPassword",nullable = false)
-    private Integer fourDigitPassword;
-    @Column(name = "sixDigitPassword",nullable = false)
-    private Integer sixDigitPassword;
+    private Integer agency;
+    private Integer number;
 
-    public Account(UUID User, String institution, Integer accountAgency, Integer accountNumber, String accountType, Integer fourDigitPassword, Integer sixDigitPassword) {
-        setIdUser(User);
-        setInstitution(institution);
-        setAccountAgency(accountAgency);
-        setAccountNumber(accountNumber);
-        setAccountType(accountType);
-        setBalance(0.0f);
-        setFourDigitPassword(fourDigitPassword);
-        setSixDigitPassword(sixDigitPassword);
-    }
+    @Enumerated(EnumType.STRING)
+    private AccountType type;
+
+    private Double balance;
+    private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 
-    public String toString(){
-        return "Account{" +
-                ", institution='" + institution + '\'' +
-                ", accountAgency=" + accountAgency +
-                ", accountNumber=" + accountNumber +
-                ", accountType='" + accountType + '\'' +
-                ", balance=" + balance +
-                '}';
+    @ToString.Exclude
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PixKey> pixKeys;
+
+    public ViewAccountDto toView(){
+        return new ViewAccountDto(
+                getId(),
+                getAgency(),
+                getNumber(),
+                getType(),
+                getBalance(),
+                getUser().toView(),
+                getPixKeys() == null ? null : getPixKeys().stream().map(PixKey::toView).toList()
+        );
     }
 }
