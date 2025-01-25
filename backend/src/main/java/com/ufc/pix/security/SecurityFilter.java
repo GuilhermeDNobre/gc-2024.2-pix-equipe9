@@ -1,6 +1,6 @@
 package com.ufc.pix.security;
 
-import com.ufc.pix.service.TokenService;
+import com.ufc.pix.service.impl.TokenService;
 import com.ufc.pix.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
