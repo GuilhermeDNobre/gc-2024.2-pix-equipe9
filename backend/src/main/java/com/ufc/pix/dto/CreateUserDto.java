@@ -1,5 +1,6 @@
 package com.ufc.pix.dto;
 
+import com.ufc.pix.enumeration.UserAccess;
 import com.ufc.pix.model.User;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -26,15 +27,6 @@ public class CreateUserDto {
     private String cpf; //= CPF in Brazil, SSN in the United States, NIF in Portugal
     @NotNull(message = "Birth Date is mandatory")
     private LocalDate birthDate;
-
-    public User toModel(){
-        return new User(
-                getName(),
-                getEmail(),
-                getPassword(),
-                getCpf(),
-                getBirthDate()
-        );
-    }
+    private UserAccess access;
 
 }

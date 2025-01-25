@@ -1,6 +1,8 @@
 package com.ufc.pix.model;
 
+import com.ufc.pix.dto.ViewUserDto;
 import com.ufc.pix.enumeration.UserAccess;
+import com.ufc.pix.enumeration.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-@Table(name="Users")
+@Table(name="users")
 @Entity
 @Getter
 @Setter
@@ -22,22 +24,24 @@ import java.util.UUID;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_id", nullable = false)
     private UUID id;
+
     private String name;
     private String cpf;
     private String email;
     private String password;
     private LocalDate birthDate;
 
-    private Boolean active;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserAccess access;
 
-    @OneToMany(mappedBy = "user")
-    private List<PixKey> pixKeys;
+    @OneToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     public User(String name, String email, String password, String cpf, LocalDate birthDate){
         setName(name);
@@ -58,5 +62,17 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return this.email;
+    }
+
+    public ViewUserDto toView(){
+        return new ViewUserDto(
+                getId(),
+                getName(),
+                getEmail(),
+                getCpf(),
+                getBirthDate(),
+                getAccess().getDescription(),
+                getStatus().getDescription()
+        );
     }
 }

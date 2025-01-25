@@ -1,7 +1,9 @@
 package com.ufc.pix.service.impl;
 
+import com.ufc.pix.dto.SearchUserDto;
 import com.ufc.pix.dto.ViewUserDto;
 import com.ufc.pix.dto.UpdateUserDto;
+import com.ufc.pix.enumeration.UserStatus;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.repository.UserRepository;
 import com.ufc.pix.dto.CreateUserDto;
@@ -13,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,18 +27,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(CreateUserDto userDto) {
 
-        if (this.findByEmail(userDto.getEmail()) != null) {
+        var user = this.userRepository.findByEmail(userDto.getEmail());
+        if (user.isPresent()) {
+            if (user.get().getStatus() != UserStatus.ACTIVE){
+                throw new BusinessException("There is an inactive user with this email");
+            }
             throw new RuntimeException("There is already a user with this email");
         }
-
-        if (this.userRepository.findByCpf(userDto.getCpf()).isPresent()){
+        user = this.userRepository.findByCpf(userDto.getCpf());
+        if (user.isPresent()){
+            if (user.get().getStatus() != UserStatus.ACTIVE){
+                throw new BusinessException("There is an inactive user with this cpf");
+            }
             throw new BusinessException("There is already a user with this cpf");
         }
 
-        userDto.setPassword(new BCryptPasswordEncoder().encode(userDto.getPassword()));
-        var user = userDto.toModel();
-        user.setActive(true);
-        return userRepository.save(user);
+        var userToSave = new User();
+        userToSave.setName(userDto.getName());
+        userToSave.setAccess(userDto.getAccess());
+        userToSave.setStatus(UserStatus.ACTIVE);
+        userToSave.setCpf(userDto.getCpf());
+        userToSave.setEmail(userDto.getEmail());
+        userToSave.setBirthDate(userDto.getBirthDate());
+        userToSave.setPassword(new BCryptPasswordEncoder().encode(userDto.getPassword()));
+        userToSave.setAccount(null);
+        return userRepository.save(userToSave);
     }
 
     @Override
@@ -49,7 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<ViewUserDto> findById(UUID userId) {
         return this.userRepository.findById(userId)
-                .map(ViewUserDto::fromUser);
+                .map(User::toView);
     }
 
 
@@ -76,12 +92,32 @@ public class UserServiceImpl implements UserService {
             user.setBirthDate(userDto.birthDate());
         }
 
+        user.setStatus(UserStatus.ACTIVE);
         userRepository.save(user);
     }
 
     @Override
     public void delete(UUID userId) {
         var user = this.userRepository.findById(userId).orElseThrow(() -> new BusinessException("User not found", HttpStatus.NOT_FOUND));
-        user.setActive(false);
+        user.setStatus(UserStatus.DELETED);
+    }
+
+    @Override
+    public void block(UUID id) {
+        var user = this.userRepository.findById(id).orElseThrow(() -> new BusinessException("User not found", HttpStatus.NOT_FOUND));
+        user.setStatus(UserStatus.BLOCKED);
+    }
+
+    @Override
+    public List<User> list(SearchUserDto dto) {
+        System.out.println(dto);
+        return this.userRepository.list(
+                dto.getId(),
+                dto.getName(),
+                dto.getEmail(),
+                dto.getCpf(),
+                dto.getBirthDate(),
+                dto.getStatus(),
+                dto.getAccess());
     }
 }
