@@ -1,5 +1,6 @@
 package com.ufc.pix.controller;
 
+import com.ufc.pix.dto.ViewPixKeyDto;
 import com.ufc.pix.enumeration.KeyType;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.model.PixKey;
@@ -55,7 +56,7 @@ public class PixKeyController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<PixKey>> getAll() {
+    public ResponseEntity<List<ViewPixKeyDto>> getAll() {
         return ResponseEntity.ok(this.pixKeyService.getAll());
     }
 }

@@ -1,5 +1,6 @@
 package com.ufc.pix.service;
 
+import com.ufc.pix.dto.ViewPixKeyDto;
 import com.ufc.pix.enumeration.KeyType;
 import com.ufc.pix.model.PixKey;
 import com.ufc.pix.model.User;
@@ -12,5 +13,5 @@ public interface PixKeyService {
     PixKey registerPixKey(User user, KeyType type, String Key);
     PixKey validatePixKey(String key);
     PixKey getById(UUID id);
-    List<PixKey> getAll();
+    List<ViewPixKeyDto> getAll();
 }

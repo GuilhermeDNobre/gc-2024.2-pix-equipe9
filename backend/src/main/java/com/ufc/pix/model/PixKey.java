@@ -31,8 +31,8 @@ public class PixKey {
         return new ViewPixKeyDto(
                 getId(),
                 getKeyValue(),
-                this.type,
-                this.date,
+                getType(),
+                getDate(),
                 getAccount().getId()
         );
     }

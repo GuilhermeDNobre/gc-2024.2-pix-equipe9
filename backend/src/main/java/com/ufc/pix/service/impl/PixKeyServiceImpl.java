@@ -1,5 +1,6 @@
 package com.ufc.pix.service.impl;
 
+import com.ufc.pix.dto.ViewPixKeyDto;
 import com.ufc.pix.enumeration.KeyType;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.model.PixKey;
@@ -81,8 +82,8 @@ public class PixKeyServiceImpl implements PixKeyService {
     }
 
     @Override
-    public List<PixKey> getAll() {
-        return this.pixKeyRepository.findAll();
+    public List<ViewPixKeyDto> getAll() {
+        return this.pixKeyRepository.findAll().stream().map(PixKey::toView).toList();
     }
 
 
