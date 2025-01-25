@@ -6,6 +6,6 @@ CREATE TABLE users (
    password VARCHAR(255),
    birth_date date,
    access varchar,
-   active BOOLEAN,
+   status varchar,
    CONSTRAINT pk_users PRIMARY KEY (user_id)
 );
