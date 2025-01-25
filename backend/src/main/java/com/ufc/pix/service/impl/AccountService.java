@@ -32,6 +32,10 @@ public class AccountService {
     private PasswordEncoder passwordEncoder;
 
     public void createAccount(CreateAccountDto accountDTO) {
+        var account = this.accountRepository.findByAgencyAndNumber(accountDTO.getAgency(),accountDTO.getNumber());
+
+        if (account.isPresent()) throw new BusinessException("There is already an account with that number and agency");
+
         //verifica se o usuario existe
         var user = this.userRepository.findById(accountDTO.getUserId()).orElseThrow(
                 () -> new BusinessException("User not found",HttpStatus.NOT_FOUND)

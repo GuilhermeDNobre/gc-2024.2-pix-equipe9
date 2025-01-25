@@ -14,7 +14,7 @@ import java.util.UUID;
 public class CreateTransactionByPixDto {
 
     @NotNull(message = "Receiver account id is required")
-    private UUID receiverPixKey;
+    private String PixKey;
 
     @NotNull(message = "Value is required")
     private Double value;

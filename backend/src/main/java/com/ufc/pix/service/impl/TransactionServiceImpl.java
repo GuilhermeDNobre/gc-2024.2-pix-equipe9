@@ -8,8 +8,11 @@ import com.ufc.pix.enumeration.AccountStatus;
 import com.ufc.pix.enumeration.TransactionStatus;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.model.Account;
+import com.ufc.pix.model.PixKey;
 import com.ufc.pix.model.Transaction;
+import com.ufc.pix.model.User;
 import com.ufc.pix.repository.AccountRepository;
+import com.ufc.pix.repository.PixKeyRepository;
 import com.ufc.pix.repository.TransactionRepository;
 import com.ufc.pix.repository.UserRepository;
 import com.ufc.pix.service.TransactionService;
@@ -30,6 +33,9 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private PixKeyRepository pixKeyRepository;
+
     @Override
     public void createById(CreateTransactionByIdDto dto) {
         if (dto.getValue() < 1) {
@@ -46,14 +52,44 @@ public class TransactionServiceImpl implements TransactionService {
 
         finishTransaction(new Transaction(receiver, sender, dto.getValue(), dto.getSendDate(), LocalDateTime.now()));
     }
+    private Account searchAccountByUserId(UUID userId){
+        return this.accountRepository.findByUserId(userId).orElseThrow(
+                () -> new BusinessException("User does not have an account", HttpStatus.NOT_FOUND));
+    }
+    private PixKey searchPixKeyByKey(String key){
+        return this.pixKeyRepository.findByKeyValue(key).orElseThrow(
+                () -> new BusinessException("Pix key " + key + " not found ", HttpStatus.NOT_FOUND));
+    }
+    @Override
+    public void createByPix(UUID userSenderId, CreateTransactionByPixDto dto) {
+
+        if (dto.getValue() < 1) {
+            throw new BusinessException("transfer value is less than 1");
+        }
+
+        //busca a conta vinculada a esse usuario
+        var sender = searchAccountByUserId(userSenderId);
+        //busca a chave pix informada
+        var pixKey = searchPixKeyByKey(dto.getPixKey());
+        //busca conta de recebimento
+        var receiver = validateAccount(pixKey.getAccount().getId());
+        validateAccount(sender.getId());
+
+        if (dto.getSendDate().isAfter(LocalDate.now())) {
+            scheduleTransaction(new Transaction(sender, receiver,dto.getValue(), dto.getSendDate(), LocalDateTime.now()));
+            return;
+        }
+
+        finishTransaction(new Transaction(sender, receiver, dto.getValue(), dto.getSendDate(), LocalDateTime.now()));
+    }
 
     private Account validateAccount(UUID accountId) {
         var account = accountRepository.findById(accountId).orElseThrow(
                 () -> new BusinessException("Account with id " + accountId + " not found", HttpStatus.NOT_FOUND)
         );
 
-        if (account.getStatus().equals(AccountStatus.ACTIVE)){
-            throw new BusinessException("Account with id "+accountId+" is not active");
+        if (!account.getStatus().equals(AccountStatus.ACTIVE)) {
+            throw new BusinessException("Account with id " + accountId + " is not active");
         }
         return account;
     }
@@ -88,10 +124,6 @@ public class TransactionServiceImpl implements TransactionService {
         ).stream().map(Transaction::toView).toList();
     }
 
-    @Override
-    public void createByPix(CreateTransactionByPixDto dto) {
-
-    }
 
     private void finishTransaction(Transaction transaction) {
         updateBalance(transaction.getSender(), transaction.getReceiver(), transaction.getTransferValue());
@@ -112,7 +144,7 @@ public class TransactionServiceImpl implements TransactionService {
         var scheduledTransactions = this.transactionRepository.findByStatus(TransactionStatus.PENDING);
 
         for (var transaction : scheduledTransactions) {
-            if (LocalDate.from(transaction.getSendDate()).equals(LocalDate.now())){
+            if (LocalDate.from(transaction.getSendDate()).equals(LocalDate.now())) {
                 finishTransaction(transaction);
             }
         }

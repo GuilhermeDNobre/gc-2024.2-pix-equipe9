@@ -1,6 +1,7 @@
 package com.ufc.pix.model;
 
 import com.ufc.pix.dto.ViewAccountDto;
+import com.ufc.pix.dto.ViewAccountOnTransactionDto;
 import com.ufc.pix.enumeration.AccountStatus;
 import com.ufc.pix.enumeration.AccountType;
 import jakarta.persistence.*;
@@ -50,6 +51,18 @@ public class Account {
                 getBalance(),
                 getStatus(),
                 getUser().toView(),
+                getPixKeys() == null ? null : getPixKeys().stream().map(PixKey::toView).toList()
+        );
+    }
+
+    public ViewAccountOnTransactionDto toViewInTransaction(){
+        return new ViewAccountOnTransactionDto(
+                getId(),
+                getAgency(),
+                getNumber(),
+                getType(),
+                getStatus(),
+                getUser().getId(),
                 getPixKeys() == null ? null : getPixKeys().stream().map(PixKey::toView).toList()
         );
     }

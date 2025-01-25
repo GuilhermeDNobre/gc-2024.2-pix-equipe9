@@ -14,6 +14,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -50,6 +51,11 @@ public class GlobalExceptionHandler {
         String errorMessage = "Invalid JSON: the request body is malformed or contains invalid values.";
 
         return buildResponse(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<ResponseError> handleMissingRequestHeaderException(MissingRequestHeaderException ex, WebRequest request){
+        return buildResponse(ex.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
 

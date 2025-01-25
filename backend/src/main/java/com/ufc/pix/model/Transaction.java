@@ -1,5 +1,6 @@
 package com.ufc.pix.model;
 
+import com.ufc.pix.dto.ViewAccountOnTransactionDto;
 import com.ufc.pix.dto.ViewTransactionDto;
 import com.ufc.pix.enumeration.TransactionStatus;
 import jakarta.persistence.*;
@@ -33,13 +34,13 @@ public class Transaction {
     private TransactionStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime finishedAt;
-    private LocalDateTime sendDate;
+    private LocalDate sendDate;
 
     public Transaction(Account sender, Account receiver, Double value, LocalDate sendDate, LocalDateTime createdAt){
         setSender(sender);
         setReceiver(receiver);
         setTransferValue(value);
-        setSendDate(LocalDateTime.from(sendDate));
+        setSendDate(sendDate);
         setCreatedAt(createdAt);
     }
 
@@ -47,11 +48,11 @@ public class Transaction {
         return new ViewTransactionDto(
                 getId(),
                 getTransferValue(),
-                getSender().toView(),
-                getReceiver().toView(),
                 getStatus(),
                 getSendDate(),
-                getFinishedAt()
+                getFinishedAt(),
+                getSender().toViewInTransaction(),
+                getReceiver().toViewInTransaction()
         );
     }
 }

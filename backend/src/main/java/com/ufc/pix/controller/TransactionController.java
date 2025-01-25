@@ -3,6 +3,7 @@ package com.ufc.pix.controller;
 import com.ufc.pix.dto.*;
 import com.ufc.pix.enumeration.TransactionStatus;
 import com.ufc.pix.service.TransactionService;
+import com.ufc.pix.service.impl.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,9 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/id")
     @CrossOrigin
     public ResponseEntity<Void> createById(@RequestBody @Valid CreateTransactionByIdDto transactionDto) {
@@ -27,10 +31,13 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/pix")
+    @PostMapping("/pix/{userSenderId}")
     @CrossOrigin
-    public ResponseEntity<Void> createByPix(@RequestBody @Valid CreateTransactionByPixDto transactionDto) {
-        this.transactionService.createByPix(transactionDto);
+    public ResponseEntity<Void> createByPix(
+            @RequestBody @Valid CreateTransactionByPixDto transactionDto,
+            @PathVariable UUID userSenderId
+    ) {
+        this.transactionService.createByPix(userSenderId, transactionDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

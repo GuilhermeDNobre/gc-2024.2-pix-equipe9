@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
             if (user.get().getStatus() != UserStatus.ACTIVE){
                 throw new BusinessException("There is an inactive user with this email");
             }
-            throw new RuntimeException("There is already a user with this email");
+            throw new BusinessException("There is already a user with this email");
         }
         user = this.userRepository.findByCpf(userDto.getCpf());
         if (user.isPresent()){

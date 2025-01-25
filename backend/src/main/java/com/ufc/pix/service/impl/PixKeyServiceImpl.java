@@ -5,9 +5,11 @@ import com.ufc.pix.enumeration.KeyType;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.model.PixKey;
 import com.ufc.pix.model.User;
+import com.ufc.pix.repository.AccountRepository;
 import com.ufc.pix.repository.PixKeyRepository;
 import com.ufc.pix.service.PixKeyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -22,35 +24,46 @@ public class PixKeyServiceImpl implements PixKeyService {
     @Autowired
     private PixKeyRepository pixKeyRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final int KEY_LENGTH = 32;
 
     @Override
-    public PixKey generateRandomPixKey(User user) {
+    public void generateRandomPixKey(UUID userId) {
+
         PixKey pixKey = new PixKey();
-        pixKey.setAccount(user.getAccount());
         pixKey.setType(KeyType.RANDOM);
         pixKey.setDate(LocalDate.now());
-
         pixKey.setKeyValue(generateRandomKey());
 
-        return pixKeyRepository.save(pixKey);
+        var userAccount = accountRepository.findByUserId(userId).orElseThrow(
+                () -> new BusinessException("User does not have an account", HttpStatus.NOT_FOUND)
+        );
+
+        pixKey.setAccount(userAccount);
+        pixKeyRepository.save(pixKey);
     }
 
     @Override
-    public PixKey registerPixKey(User user, KeyType type, String key) {
+    public void registerPixKey(UUID userID, KeyType type, String key) {
+        var userAccount = accountRepository.findByUserId(userID).orElseThrow(
+                () -> new BusinessException("User does not have an account", HttpStatus.NOT_FOUND)
+        );
 
-        boolean hasPixKeyOfType = pixKeyRepository.existsByType(type);
-        if (hasPixKeyOfType) {
-            throw new BusinessException("Usuário já possui uma chave PIX cadastrada do tipo " + type);
+        var hasPixKeyOfType = pixKeyRepository.findByAccount_IdAndType(userAccount.getId(),type);
+        if (hasPixKeyOfType.isPresent()) {
+            throw new BusinessException("User already has a registered PIX key of the type " + type);
         }
 
+
         PixKey pixKey = new PixKey();
-        pixKey.setAccount(user.getAccount());
+        pixKey.setAccount(userAccount);
         pixKey.setType(type);
         pixKey.setKeyValue(key);
         pixKey.setDate(LocalDate.now());
-        return pixKeyRepository.save(pixKey);
+        pixKeyRepository.save(pixKey);
     }
 
 
