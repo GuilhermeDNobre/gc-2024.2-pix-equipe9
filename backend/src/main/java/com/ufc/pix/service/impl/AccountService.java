@@ -1,6 +1,9 @@
 package com.ufc.pix.service.impl;
 
 import com.ufc.pix.dto.CreateAccountDto;
+import com.ufc.pix.dto.UpdateAccountDto;
+import com.ufc.pix.dto.ViewAccountDto;
+import com.ufc.pix.enumeration.AccountStatus;
 import com.ufc.pix.enumeration.UserStatus;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.model.Account;
@@ -50,6 +53,7 @@ public class AccountService {
         accountToSave.setType(accountDTO.getType());
         accountToSave.setNumber(accountDTO.getNumber());
         accountToSave.setPixKeys(null);
+        accountToSave.setStatus(AccountStatus.ACTIVE);
         accountToSave.setPassword(passwordEncoder.encode(accountDTO.getPassword())); //adicione senha com hash
 
         var savedAccount = accountRepository.save(accountToSave);
@@ -65,22 +69,32 @@ public class AccountService {
         return Optional.ofNullable(accountRepository.findAccountsById(id));
     }
 
-    public Optional<Account> updateAccount(UUID id, CreateAccountDto accountDTO) {
-        Optional<Account> accountOptional = Optional.ofNullable(accountRepository.findAccountsById(id));
-        if (accountOptional.isPresent()) {
-            var account = accountOptional.get();
-            BeanUtils.copyProperties(accountDTO, account);
-            return Optional.of(accountRepository.save(account));
-        }
-        return Optional.empty();
+    public void updateAccount(UUID id, UpdateAccountDto dto) {
+        var account = this.accountRepository.findById(id).orElseThrow(()->new BusinessException("Account not found",HttpStatus.NOT_FOUND));
+
+        if (dto.getAgency() != null) account.setAgency(dto.getAgency());
+        if (dto.getType() != null) account.setAgency(dto.getAgency());
+        if (dto.getPassword() != null) account.setPassword(passwordEncoder.encode(dto.getPassword()));
+        if (dto.getNumber() != null) account.setNumber(dto.getNumber());
+
+        this.accountRepository.save(account);
+
     }
 
-    public boolean deleteAccount(UUID id) {
-        Optional<Account> accountOptional = Optional.ofNullable(accountRepository.findAccountsById(id));
-        if (accountOptional.isPresent()) {
-            accountRepository.delete(accountOptional.get());
-            return true;
-        }
-        return false;
+    public void deleteAccount(UUID id) {
+        var account = this.accountRepository.findById(id).orElseThrow(()->new BusinessException("Account not found",HttpStatus.NOT_FOUND));
+        account.setStatus(AccountStatus.DELETED);
+        this.accountRepository.save(account);
+    }
+
+    public void blockAccount(UUID id) {
+        var account = this.accountRepository.findById(id).orElseThrow(()->new BusinessException("Account not found",HttpStatus.NOT_FOUND));
+        account.setStatus(AccountStatus.BLOCKED);
+        this.accountRepository.save(account);
+    }
+
+    public ViewAccountDto findById(UUID id) {
+        return this.accountRepository.findById(id).orElseThrow(
+                ()-> new BusinessException("Account not found", HttpStatus.NOT_FOUND)).toView();
     }
 }

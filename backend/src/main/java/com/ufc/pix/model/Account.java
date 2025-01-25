@@ -1,6 +1,7 @@
 package com.ufc.pix.model;
 
 import com.ufc.pix.dto.ViewAccountDto;
+import com.ufc.pix.enumeration.AccountStatus;
 import com.ufc.pix.enumeration.AccountType;
 import jakarta.persistence.*;
 
@@ -33,10 +34,12 @@ public class Account {
     @JoinColumn(name = "user_id")
     private User user;
 
-
     @ToString.Exclude
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PixKey> pixKeys;
+
+    @Enumerated(EnumType.STRING)
+    private AccountStatus status;
 
     public ViewAccountDto toView(){
         return new ViewAccountDto(
@@ -45,6 +48,7 @@ public class Account {
                 getNumber(),
                 getType(),
                 getBalance(),
+                getStatus(),
                 getUser().toView(),
                 getPixKeys() == null ? null : getPixKeys().stream().map(PixKey::toView).toList()
         );
