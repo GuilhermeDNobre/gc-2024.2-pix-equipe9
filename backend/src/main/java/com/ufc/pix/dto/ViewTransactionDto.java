@@ -1,6 +1,6 @@
 package com.ufc.pix.dto;
 
-import com.ufc.pix.model.Account;
+import com.ufc.pix.enumeration.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,10 @@ public class ViewTransactionDto {
 
     private UUID id;
     private Double transferValue;
-    private LocalDateTime transactionDate;
     private ViewAccountDto sender;
     private ViewAccountDto receiver;
+    private TransactionStatus status;
+    private LocalDateTime sendDate;
+    private LocalDateTime finishedAt;
+
 }
