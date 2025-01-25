@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TransactionService {
 
-    void create(CreateTransactionByIdDto userDto);
+    void createById(CreateTransactionByIdDto userDto);
 
     List<ViewTransactionDto> list(SearchTrasactionDto dto);
 

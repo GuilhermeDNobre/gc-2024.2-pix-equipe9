@@ -3,8 +3,10 @@ package com.ufc.pix.service.impl;
 import com.ufc.pix.dto.SearchUserDto;
 import com.ufc.pix.dto.ViewUserDto;
 import com.ufc.pix.dto.UpdateUserDto;
+import com.ufc.pix.enumeration.AccountStatus;
 import com.ufc.pix.enumeration.UserStatus;
 import com.ufc.pix.exception.BusinessException;
+import com.ufc.pix.repository.AccountRepository;
 import com.ufc.pix.repository.UserRepository;
 import com.ufc.pix.dto.CreateUserDto;
 import com.ufc.pix.model.User;
@@ -23,6 +25,9 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    AccountRepository accountRepository;
 
     @Override
     public User create(CreateUserDto userDto) {
@@ -99,18 +104,34 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(UUID userId) {
         var user = this.userRepository.findById(userId).orElseThrow(() -> new BusinessException("User not found", HttpStatus.NOT_FOUND));
+
+        var account = this.accountRepository.findByUserId(userId);
+
+        if (account.isPresent()){
+            account.get().setStatus(AccountStatus.DELETED);
+            this.accountRepository.save(account.get());
+        }
         user.setStatus(UserStatus.DELETED);
+        this.userRepository.save(user);
     }
 
     @Override
     public void block(UUID id) {
         var user = this.userRepository.findById(id).orElseThrow(() -> new BusinessException("User not found", HttpStatus.NOT_FOUND));
         user.setStatus(UserStatus.BLOCKED);
+
+        var account = this.accountRepository.findByUserId(id);
+
+        if (account.isPresent()){
+            account.get().setStatus(AccountStatus.BLOCKED);
+            this.accountRepository.save(account.get());
+        }
+        this.userRepository.save(user);
     }
 
     @Override
     public List<User> list(SearchUserDto dto) {
-        System.out.println(dto);
+
         return this.userRepository.list(
                 dto.getId(),
                 dto.getName(),

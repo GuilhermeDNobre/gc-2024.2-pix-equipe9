@@ -1,10 +1,12 @@
 package com.ufc.pix.model;
 
 import com.ufc.pix.dto.ViewTransactionDto;
+import com.ufc.pix.enumeration.TransactionStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -23,30 +25,33 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "sender_account_id")
     private Account sender;
-
     @ManyToOne
     @JoinColumn(name = "receiver_account_id")
     private Account receiver;
-
     private Double transferValue;
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus status;
+    private LocalDateTime createdAt;
+    private LocalDateTime finishedAt;
+    private LocalDateTime sendDate;
 
-    @CreationTimestamp
-    private LocalDateTime transactionDate;
-
-    public Transaction(Account sender, Account receiver, Double value){
+    public Transaction(Account sender, Account receiver, Double value, LocalDate sendDate, LocalDateTime createdAt){
         setSender(sender);
         setReceiver(receiver);
         setTransferValue(value);
-        setTransactionDate(LocalDateTime.now());
+        setSendDate(LocalDateTime.from(sendDate));
+        setCreatedAt(createdAt);
     }
 
     public ViewTransactionDto toView(){
         return new ViewTransactionDto(
                 getId(),
                 getTransferValue(),
-                getTransactionDate(),
                 getSender().toView(),
-                getReceiver().toView()
+                getReceiver().toView(),
+                getStatus(),
+                getSendDate(),
+                getFinishedAt()
         );
     }
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
@@ -12,13 +13,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CreateTransactionByPixDto {
 
-    @NotNull(message = "Sender account id is required")
-    private UUID sender_id;
-
     @NotNull(message = "Receiver account id is required")
-    private UUID receiver_id;
+    private UUID receiverPixKey;
 
     @NotNull(message = "Value is required")
     private Double value;
+
+    private LocalDate sendDate;
 
 }
