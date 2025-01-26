@@ -1,0 +1,10 @@
+# Ignorar arquivos desnecessários no build
+.gradle
+/build
+/out
+*.log
+*.iml
+*.class
+.env
+.idea
+.DS_Store
