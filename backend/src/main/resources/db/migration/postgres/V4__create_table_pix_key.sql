@@ -1,10 +1,8 @@
-CREATE TABLE pix_key (
-  id UUID NOT NULL,
-   key VARCHAR(255),
-   type VARCHAR(255),
-   date date,
-   user_id UUID NOT NULL,
-   CONSTRAINT pk_pixkey PRIMARY KEY (id)
+CREATE TABLE pix_keys (
+    id UUID PRIMARY KEY,
+    key_value VARCHAR(255) UNIQUE NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    date DATE NOT NULL,
+    account_id UUID NOT NULL,
+    CONSTRAINT fk_pixkeys_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
 );
-
-ALTER TABLE pix_key ADD CONSTRAINT FK_PIXKEY_ON_USER FOREIGN KEY (user_id) REFERENCES users (user_id);

@@ -2,7 +2,7 @@ CREATE TABLE transactions (
     id UUID PRIMARY KEY,
     sender_account_id UUID NOT NULL,
     receiver_account_id UUID NOT NULL,
-    transfer_value DOUBLE NOT NULL,
+    transfer_value NUMERIC NOT NULL,
     finished_at TIMESTAMP,
     send_date DATE,
     created_at TIMESTAMP,

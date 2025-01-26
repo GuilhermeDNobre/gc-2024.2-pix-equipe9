@@ -3,7 +3,7 @@ CREATE TABLE accounts (
     agency INT NOT NULL,
     number INT NOT NULL,
     type VARCHAR(50) NOT NULL,
-    balance DOUBLE DEFAULT 0.0 NOT NULL,
+    balance numeric DEFAULT 0.0 NOT NULL,
     password VARCHAR NOT NULL,
     user_id UUID UNIQUE,
     status VARCHAR,

@@ -1,11 +1,11 @@
 CREATE TABLE users (
-  user_id UUID NOT NULL,
-   name VARCHAR(255),
-   tax_id VARCHAR(255),
-   email VARCHAR(255),
-   password VARCHAR(255),
-   birth_date date,
-   access varchar,
-   status varchar,
-   CONSTRAINT pk_users PRIMARY KEY (user_id)
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    cpf VARCHAR(14) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    birth_date DATE NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    access VARCHAR(50) NOT NULL,
+    account_id UUID
 );
