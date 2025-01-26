@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum TransactionStatus {
         PENDING("Pendente"),
         COMPLETED("Finalizado"),
-        FAILED("Fracassada");
+        FAILED("Fracassada"),
+        CANCELED("Cancelado");
 
         private final String description;
 }

@@ -26,7 +26,7 @@ public class PixKeyController {
     private TokenService tokenService;
 
     @PostMapping("/generate/{userId}")
-    public ResponseEntity<Void> generateRadomPixKey(@PathVariable UUID userId) {
+    public ResponseEntity<Void> generateRandomPixKey(@PathVariable UUID userId) {
         pixKeyService.generateRandomPixKey(userId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
