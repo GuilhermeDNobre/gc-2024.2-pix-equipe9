@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
-@Autowired
-GenerateReportsService generateReportsService;
+
 @RestController
 @RequestMapping("/generate-reports")
 public class GenerateReportsController {
+    @Autowired
+    GenerateReportsService generateReportsService;
+
     @GetMapping("/accounts/{id}")
     public ResponseEntity<ViewGenerateReportsDto> generateReports(@PathVariable(value = "id") UUID id) {
         return ResponseEntity.ok(this.generateReportsService.generateByUserId(id));
