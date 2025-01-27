@@ -39,6 +39,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             @Param("receiverId")    UUID receiverId
     );
 
+    @Query("""
+        SELECT t FROM Transaction t
+        WHERE t.sender.user.id = :userId OR t.receiver.user.id = :userId
+        ORDER BY t.createdAt
+       """)
+    List<Transaction> findAllByUserId(@Param("userId") UUID userId);
+
 
     List<Transaction> findByStatus(TransactionStatus status);
 }
