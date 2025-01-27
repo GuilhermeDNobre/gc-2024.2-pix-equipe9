@@ -11,8 +11,6 @@ import lombok.*;
 public class GenerateReports {
     public ViewGenerateReportsDto toView(){
         return new ViewGenerateReportsDto(
-                toView().getTotalTransactions(),
-                toView().getTransactions()
         );
     }
 }
