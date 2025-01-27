@@ -1,8 +1,10 @@
 package com.ufc.pix.security;
 
+import org.hibernate.mapping.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.ArrayList;
 
 @Configuration
 @EnableWebSecurity
@@ -26,12 +30,10 @@ public class SecurityConfig {
             "/generate-reports/**"
     };
     private final String[] freeRoutes = {//List of free routes
-            "/users/login",
-            "/users",
-            "/accounts",
-            "/accounts/transfer",
             "/h2/**",
-            "/notifications/**"
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/api-docs/**"
     };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -48,7 +50,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         /*.requestMatchers(freeRoutes).permitAll()//autorizando para rotas
                         .requestMatchers(allowedForLoggedIn).hasRole("USER")//autorizando todas as rotas para logados*/
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers(freeRoutes).permitAll()
+                        .requestMatchers("users/**").permitAll()
+                        .anyRequest().authenticated()
+                        //.requestMatchers(HttpMethod.POST, new String[]{"/users/login", "/users"}).permitAll()
+                        //.requestMatchers(HttpMethod.POST, new String[]{"/users/block/**", "/users/unblock/**"}).authenticated()
+                        //.requestMatchers(HttpMethod.GET, "users").authenticated()
+
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class) //adiciona filtro antes
                 .build();

@@ -1,9 +1,10 @@
 package com.ufc.pix.controller;
 
+import com.ufc.pix.doc.TransactionDoc;
 import com.ufc.pix.dto.*;
 import com.ufc.pix.enumeration.TransactionStatus;
 import com.ufc.pix.service.TransactionService;
-import com.ufc.pix.service.impl.TokenService;
+import com.ufc.pix.service.impl.TokenServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,13 +17,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
-public class TransactionController {
+public class TransactionController implements TransactionDoc {
 
     @Autowired
     private TransactionService transactionService;
 
     @Autowired
-    private TokenService tokenService;
+    private TokenServiceImpl tokenService;
 
     @PostMapping("/id")
     @CrossOrigin

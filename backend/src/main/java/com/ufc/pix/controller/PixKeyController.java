@@ -1,12 +1,12 @@
 package com.ufc.pix.controller;
 
+import com.ufc.pix.doc.PixKeyDoc;
 import com.ufc.pix.dto.ViewPixKeyDto;
 import com.ufc.pix.enumeration.KeyType;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.model.PixKey;
-import com.ufc.pix.model.User;
 import com.ufc.pix.service.PixKeyService;
-import com.ufc.pix.service.impl.TokenService;
+import com.ufc.pix.service.impl.TokenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +17,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("pix")
-public class PixKeyController {
+public class PixKeyController implements PixKeyDoc {
 
     @Autowired
     private PixKeyService pixKeyService;
 
     @Autowired
-    private TokenService tokenService;
+    private TokenServiceImpl tokenService;
 
     @PostMapping("/generate/{userId}")
     public ResponseEntity<Void> generateRandomPixKey(@PathVariable UUID userId) {
@@ -47,7 +47,7 @@ public class PixKeyController {
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<?> validatePixKey(@RequestParam String key) {
+    public ResponseEntity<ViewPixKeyDto> validatePixKey(@RequestParam String key) {
         PixKey pixKey = pixKeyService.validatePixKey(key);
         return ResponseEntity.ok(pixKey.toView());
     }

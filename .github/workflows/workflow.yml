@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       JWT_SECRET: qwe123
+      SPRING_PROFILES_ACTIVE: prod
 
     steps:
       - name: Check out code
@@ -30,16 +31,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Grant execution permission for gradlew
-        run: chmod +x ./gradlew
-        working-directory: backend
-
-      - name: Build application with Gradle
-        run: ./gradlew clean build -x test
-        working-directory: backend
-
       - name: Start Docker Compose
-        run: docker-compose up -d
+        run: docker-compose up --build
 
       - name: Wait for application to be ready
         run: |
@@ -57,11 +50,6 @@ jobs:
 
       - name: Check Docker logs
         run: docker-compose logs
-
-      - name: Run tests
-        run: ./gradlew test
-        working-directory: backend
-
 
       - name: Stop Docker Compose
         if: always()

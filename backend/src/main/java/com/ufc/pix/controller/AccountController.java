@@ -1,5 +1,6 @@
 package com.ufc.pix.controller;
 
+import com.ufc.pix.doc.AccountDoc;
 import com.ufc.pix.dto.CreateAccountDto;
 import com.ufc.pix.dto.CreateTransactionByIdDto;
 import com.ufc.pix.dto.UpdateAccountDto;
@@ -22,7 +23,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("accounts")
-public class AccountController {
+public class AccountController implements AccountDoc {
     @Autowired
     AccountService accountService;
 

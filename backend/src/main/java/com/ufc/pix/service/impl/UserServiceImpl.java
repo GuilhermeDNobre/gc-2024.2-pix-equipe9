@@ -1,18 +1,18 @@
 package com.ufc.pix.service.impl;
 
-import com.ufc.pix.dto.SearchUserDto;
-import com.ufc.pix.dto.ViewUserDto;
-import com.ufc.pix.dto.UpdateUserDto;
+import com.ufc.pix.dto.*;
 import com.ufc.pix.enumeration.AccountStatus;
 import com.ufc.pix.enumeration.UserStatus;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.repository.AccountRepository;
 import com.ufc.pix.repository.UserRepository;
-import com.ufc.pix.dto.CreateUserDto;
 import com.ufc.pix.model.User;
+import com.ufc.pix.service.TokenService;
 import com.ufc.pix.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,23 +25,25 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
-    AccountRepository accountRepository;
-
+    private AccountRepository accountRepository;
+    @Autowired
+    private TokenService tokenService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
     @Override
     public User create(CreateUserDto userDto) {
 
         var user = this.userRepository.findByEmail(userDto.getEmail());
         if (user.isPresent()) {
-            if (user.get().getStatus() != UserStatus.ACTIVE){
+            if (((User) user.get()).getStatus() != UserStatus.ACTIVE){
                 throw new BusinessException("There is an inactive user with this email");
             }
             throw new BusinessException("There is already a user with this email");
         }
-        user = this.userRepository.findByCpf(userDto.getCpf());
-        if (user.isPresent()){
-            if (user.get().getStatus() != UserStatus.ACTIVE){
+        var userByCpf = this.userRepository.findByCpf(userDto.getCpf());
+        if (userByCpf.isPresent()){
+            if (userByCpf.get().getStatus() != UserStatus.ACTIVE){
                 throw new BusinessException("There is an inactive user with this cpf");
             }
             throw new BusinessException("There is already a user with this cpf");
@@ -59,8 +61,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(userToSave);
     }
 
-    @Override
-    public UserDetails findByEmail(String email) {
+    private UserDetails findByEmail(String email) {
 
         return this.userRepository.findByEmail(email).orElseThrow(()->
             new BusinessException("User not found",HttpStatus.NOT_FOUND)
@@ -116,7 +117,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void block(UUID id) {
+    public void block(UUID id, String authorizationHeader) {
         var user = this.userRepository.findById(id).orElseThrow(() -> new BusinessException("User not found", HttpStatus.NOT_FOUND));
         user.setStatus(UserStatus.BLOCKED);
 
@@ -124,6 +125,22 @@ public class UserServiceImpl implements UserService {
 
         if (account.isPresent()){
             account.get().setStatus(AccountStatus.BLOCKED);
+            this.accountRepository.save(account.get());
+        }
+
+        this.tokenService.invalidateToken(authorizationHeader.replace("Bearer ", ""));
+        this.userRepository.save(user);
+    }
+
+    @Override
+    public void unblock(UUID id) {
+        var user = this.userRepository.findById(id).orElseThrow(() -> new BusinessException("User not found", HttpStatus.NOT_FOUND));
+        user.setStatus(UserStatus.ACTIVE);
+
+        var account = this.accountRepository.findByUserId(id);
+
+        if (account.isPresent()){
+            account.get().setStatus(AccountStatus.ACTIVE);
             this.accountRepository.save(account.get());
         }
         this.userRepository.save(user);
@@ -141,4 +158,17 @@ public class UserServiceImpl implements UserService {
                 dto.getStatus(),
                 dto.getAccess());
     }
+
+    @Override
+    public Token login(LoginDto loginDto) {
+        var usernamePassword = new UsernamePasswordAuthenticationToken(loginDto.email(), loginDto.password());
+        var user = (User) this.authenticationManager.authenticate(usernamePassword).getPrincipal();
+
+        if (!user.getStatus().equals(UserStatus.ACTIVE)){
+            throw new BusinessException("User is "+user.getStatus());
+        }
+        var tokenKey = this.tokenService.generateToken(user);
+        return new Token(tokenKey);
+    }
+
 }

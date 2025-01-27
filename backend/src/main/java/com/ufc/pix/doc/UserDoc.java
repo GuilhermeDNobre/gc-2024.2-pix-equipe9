@@ -221,5 +221,29 @@ public interface UserDoc {
                     content = @Content()
             )
     })
-    ResponseEntity<Void> block(@Parameter(description = "ID do usuário a ser bloqueado", required = true) @RequestParam UUID userId);
+    ResponseEntity<Void> block(@Parameter(description = "ID do usuário a ser bloqueado", required = true) @RequestParam UUID userId, String authorizationHeader);
+
+    @Operation(
+            summary = "Desbloquear um usuário",
+            description = "Desbloqueia um usuário no sistema.",
+            security = @SecurityRequirement(name = "Bearer")
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Usuário desbloqueado com sucesso",
+                    content = @Content()
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Usuário não encontrado",
+                    content = @Content()
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Erro inesperado",
+                    content = @Content()
+            )
+    })
+    ResponseEntity<Void> unblock(@Parameter(description = "ID do usuário a ser desbloqueado", required = true) @RequestParam UUID userId);
 }

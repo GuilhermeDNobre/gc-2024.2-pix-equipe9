@@ -4,9 +4,11 @@ import com.ufc.pix.doc.UserDoc;
 import com.ufc.pix.dto.*;
 import com.ufc.pix.enumeration.UserAccess;
 import com.ufc.pix.enumeration.UserStatus;
+import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.model.User;
+import com.ufc.pix.service.TokenService;
 import com.ufc.pix.service.impl.AuthorizationService;
-import com.ufc.pix.service.impl.TokenService;
+import com.ufc.pix.service.impl.TokenServiceImpl;
 import com.ufc.pix.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +30,6 @@ public class UserController implements UserDoc {
     private AuthorizationService authorizationService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private TokenService tokenService;
-    @Autowired
-    AuthenticationManager authenticationManager;
 
     @PostMapping
     @CrossOrigin
@@ -45,11 +43,8 @@ public class UserController implements UserDoc {
     public ResponseEntity<Token> login(
             @RequestBody LoginDto loginDto
     ) {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(loginDto.email(), loginDto.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        var token = this.tokenService.generateToken((User) auth.getPrincipal());
-        return ResponseEntity.status(HttpStatus.OK).body(new Token(token));
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.login(loginDto));
     }
 
     @GetMapping("/{userId}")
@@ -92,8 +87,15 @@ public class UserController implements UserDoc {
 
     @PostMapping("/block/{id}")
     @CrossOrigin
-    public ResponseEntity<Void> block(@PathVariable UUID id) {
-        this.userService.block(id);
+    public ResponseEntity<Void> block(@PathVariable UUID id,@RequestHeader("Authorization") String authorizationHeader) {
+        this.userService.block(id, authorizationHeader);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/unblock/{id}")
+    @CrossOrigin
+    public ResponseEntity<Void> unblock(@PathVariable UUID id) {
+        this.userService.unblock(id);
         return ResponseEntity.noContent().build();
     }
 
