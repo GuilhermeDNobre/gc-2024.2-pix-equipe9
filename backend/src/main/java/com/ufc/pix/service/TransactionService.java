@@ -17,4 +17,5 @@ public interface TransactionService {
 
     void createByPix(UUID userSenderId, CreateTransactionByPixDto dto);
 
+    void cancelPendingTransaction(UUID transactionId);
 }

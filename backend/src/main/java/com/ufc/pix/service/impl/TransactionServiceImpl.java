@@ -10,11 +10,9 @@ import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.model.Account;
 import com.ufc.pix.model.PixKey;
 import com.ufc.pix.model.Transaction;
-import com.ufc.pix.model.User;
 import com.ufc.pix.repository.AccountRepository;
 import com.ufc.pix.repository.PixKeyRepository;
 import com.ufc.pix.repository.TransactionRepository;
-import com.ufc.pix.repository.UserRepository;
 import com.ufc.pix.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -148,5 +146,15 @@ public class TransactionServiceImpl implements TransactionService {
                 finishTransaction(transaction);
             }
         }
+    }
+
+    public void cancelPendingTransaction(UUID transactionId) {
+        var transaction = this.transactionRepository.findById(transactionId).orElseThrow();
+//        if(transaction.getStatus().equals(TransactionStatus.PENDING)) {
+//            transaction.setStatus(TransactionStatus.CANCELED);
+//            this.transactionRepository.save(transaction);
+//        }
+        transaction.setStatus(TransactionStatus.CANCELED);
+        this.transactionRepository.save(transaction);
     }
 }

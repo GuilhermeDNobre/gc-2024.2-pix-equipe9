@@ -41,6 +41,13 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PostMapping("/pix/cancel/{transactionId}")
+    public ResponseEntity<Void> cancelByTransactionId(@PathVariable UUID transactionId) {
+        this.transactionService.cancelPendingTransaction(transactionId);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+
     @GetMapping
     @CrossOrigin
     public ResponseEntity<List<ViewTransactionDto>> list(
@@ -73,5 +80,6 @@ public class TransactionController {
         ));
         return ResponseEntity.ok(list);
     }
+
 
 }
