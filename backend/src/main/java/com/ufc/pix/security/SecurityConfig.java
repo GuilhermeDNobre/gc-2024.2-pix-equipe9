@@ -30,7 +30,8 @@ public class SecurityConfig {
             "/users",
             "/accounts",
             "/accounts/transfer",
-            "/h2/**"
+            "/h2/**",
+            "/notifications/**"
     };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

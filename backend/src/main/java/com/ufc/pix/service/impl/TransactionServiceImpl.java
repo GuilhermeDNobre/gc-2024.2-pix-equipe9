@@ -8,6 +8,7 @@ import com.ufc.pix.enumeration.AccountStatus;
 import com.ufc.pix.enumeration.TransactionStatus;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.model.Account;
+import com.ufc.pix.model.Notification;
 import com.ufc.pix.model.PixKey;
 import com.ufc.pix.model.Transaction;
 import com.ufc.pix.repository.AccountRepository;
@@ -127,6 +128,11 @@ public class TransactionServiceImpl implements TransactionService {
         updateBalance(transaction.getSender(), transaction.getReceiver(), transaction.getTransferValue());
         transaction.setFinishedAt(LocalDateTime.now());
         transaction.setStatus(TransactionStatus.COMPLETED);
+        Notification notificationMessage = new Notification();
+        notificationMessage.setMessage("Transferência recebida no valor de R$ " + transaction.getTransferValue());
+        notificationMessage.setFinishedAt(transaction.getFinishedAt());
+        NotificationServiceImpl notification = new NotificationServiceImpl();
+        notification.saveNotification(notificationMessage);
         this.transactionRepository.save(transaction);
     }
 
