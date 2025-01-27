@@ -9,7 +9,7 @@ COPY . /usr/app/
 RUN chmod +x gradlew
 
 # Realiza o build usando o gradlew (não diretamente o gradle)
-RUN ./gradlew clean build -x test
+RUN gradle clean build -x test
 
 # Etapa 2: Runtime
 FROM eclipse-temurin:17-jre AS RUNTIME
@@ -21,7 +21,7 @@ ENV JAR_NAME=app.jar
 WORKDIR $APP_HOME
 
 # Copia o arquivo JAR gerado na etapa de build
-COPY --from=BUILD /usr/app/build/libs/*.jar $JAR_NAME
+COPY --from=BUILD $APP_HOME/build/libs/*.jar $JAR_NAME
 
 # Expondo a porta da aplicação
 EXPOSE 8080
