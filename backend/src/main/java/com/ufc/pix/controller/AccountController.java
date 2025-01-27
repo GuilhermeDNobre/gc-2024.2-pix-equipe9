@@ -33,6 +33,12 @@ public class AccountController implements AccountDoc {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PostMapping("/report/{id}")
+    public ResponseEntity<Void> reportAccount(@PathVariable(value = "id") UUID accountId) {
+        this.accountService.reportAccount(accountId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
     @GetMapping()
     public ResponseEntity<List<ViewAccountDto>> getAllAccounts() {
         List<Account> list = accountService.getAllAccounts();
@@ -55,4 +61,6 @@ public class AccountController implements AccountDoc {
         this.accountService.deleteAccount(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }
