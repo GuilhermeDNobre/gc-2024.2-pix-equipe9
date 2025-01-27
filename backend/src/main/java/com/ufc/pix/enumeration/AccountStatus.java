@@ -11,7 +11,8 @@ public enum AccountStatus {
     BLOCKED("Bloqueado"),
     SUSPENDED("Suspenso"),
     DELETED("Deletado"),
-    DISABLED("Desabilitado");
+    DISABLED("Desabilitado"),
+    SUSPICIOUS("Suspeita");
 
     private final String description;
 }

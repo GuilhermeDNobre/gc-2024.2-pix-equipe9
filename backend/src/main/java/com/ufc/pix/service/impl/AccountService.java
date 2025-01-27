@@ -101,4 +101,22 @@ public class AccountService {
         return this.accountRepository.findById(id).orElseThrow(
                 ()-> new BusinessException("Account not found", HttpStatus.NOT_FOUND)).toView();
     }
+
+    public void reportAccount(UUID id){
+        var account = this.accountRepository.findById(id).orElseThrow(()->new BusinessException("Account not found",HttpStatus.NOT_FOUND));
+        switch (account.getStatus()){
+            case ACTIVE:
+                account.setStatus(AccountStatus.SUSPICIOUS);
+                this.accountRepository.save(account);
+                break;
+            case SUSPICIOUS:
+                account.setStatus(AccountStatus.BLOCKED);
+                this.accountRepository.save(account);
+                break;
+            case BLOCKED:
+                break;
+            default:
+                throw new BusinessException("Invalid status");
+        }
+    }
 }
