@@ -6,6 +6,7 @@ import com.ufc.pix.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
 
-    Optional<User> findByEmail(String email);
+    Optional<UserDetails> findByEmail(String email);
     Optional<User> findByCpf(String cpf);
 
     @Query("""
