@@ -9,5 +9,5 @@ public interface NotificationService {
 
     List<Notification> getNotificationByUserId(UUID id);
 
-    Notification saveNotification(Notification notification);
+    void saveNotification(Notification notification);
 }
