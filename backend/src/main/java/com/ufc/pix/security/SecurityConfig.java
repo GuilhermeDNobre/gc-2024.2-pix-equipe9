@@ -55,9 +55,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "users/login").permitAll()
                         .requestMatchers(HttpMethod.GET,"users/**").hasRole("ADMIN")
 
-                        .requestMatchers("account/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "account/**").permitAll()
-
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class) //adiciona filtro antes
