@@ -14,16 +14,17 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     Transaction findStatementById(UUID id);
 
     @Query("""
-            select t from Transaction t
-            where (:id is null or t.id = :id) 
-            and ((:transferValueStart is null or :transferValueEnd is null) or t.transferValue between :transferValueStart and :transferValueEnd) 
-            and (:status is null or t.status = :status) 
-            and ((:createdAtStart is null or :createdAtEnd is null) or t.createdAt between :createdAtStart and :createdAtEnd) 
-            and ((:finishedAtStart is null or :finishedAtEnd is null) or t.finishedAt between :finishedAtStart and :finishedAtEnd) 
-            and ((:sendDateStart is null or :sendDateEnd is null) or t.sendDate between :sendDateStart and :sendDateEnd)
-            and (:senderId is null or t.sender.id = :senderId) 
-            and (:receiverId is null or t.receiver.id = :receiverId)
-            order by t.createdAt""")
+        select t from Transaction t
+        where (:id is null or t.id = :id) 
+        and ((:transferValueStart is null or :transferValueEnd is null) or t.transferValue between :transferValueStart and :transferValueEnd) 
+        and (:status is null or t.status = :status) 
+        and ((CAST(:createdAtStart as timestamp) is null or CAST(:createdAtStart as timestamp) is null) or t.createdAt between :createdAtStart and :createdAtEnd) 
+        and ((CAST(:finishedAtStart as timestamp) is null or CAST(:finishedAtEnd as timestamp) is null) or t.finishedAt between :finishedAtStart and :finishedAtEnd) 
+        and ((CAST(:sendDateStart as timestamp) is null or CAST(:sendDateEnd as timestamp) is null) or t.sendDate between :sendDateStart and :sendDateEnd)
+        and (:senderId is null or t.sender.id = :senderId) 
+        and (:receiverId is null or t.receiver.id = :receiverId)
+        order by t.createdAt
+""")
     List<Transaction> list(
             @Param("id")            UUID id,
             @Param("transferValueStart") Double transferValueStart,
@@ -38,6 +39,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             @Param("senderId")      UUID senderId,
             @Param("receiverId")    UUID receiverId
     );
+
 
     @Query("""
         SELECT t FROM Transaction t

@@ -22,9 +22,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("""
             select u from User u
             where (:id      is null or  u.id = :id ) 
-            and ( :name     is null or  u.name like concat('%', :name, '%') )
-            and ( :email    is null or  u.email = :email) 
-            and ( :cpf      is null or  u.cpf = :cpf) 
+            and ( u.name like concat('%', :name, '%') )
+            and ( :email = '' or u.email = :email) 
+            and ( :email = '' or u.cpf = :cpf) 
             and ( :birthDate is null or u.birthDate = :birthDate) 
             and ( :status   is null or  u.status = :status ) 
             and ( :access   is null or  u.access = :access )

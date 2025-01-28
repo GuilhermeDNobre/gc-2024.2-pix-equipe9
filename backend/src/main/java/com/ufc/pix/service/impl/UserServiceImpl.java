@@ -117,37 +117,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void block(UUID id, String authorizationHeader) {
-        var user = this.userRepository.findById(id).orElseThrow(() -> new BusinessException("User not found", HttpStatus.NOT_FOUND));
-        user.setStatus(UserStatus.BLOCKED);
-
-        var account = this.accountRepository.findByUserId(id);
-
-        if (account.isPresent()){
-            account.get().setStatus(AccountStatus.BLOCKED);
-            this.accountRepository.save(account.get());
-        }
-
-        this.tokenService.invalidateToken(authorizationHeader.replace("Bearer ", ""));
-        this.userRepository.save(user);
-    }
-
-    @Override
-    public void unblock(UUID id) {
-        var user = this.userRepository.findById(id).orElseThrow(() -> new BusinessException("User not found", HttpStatus.NOT_FOUND));
-        user.setStatus(UserStatus.ACTIVE);
-
-        var account = this.accountRepository.findByUserId(id);
-
-        if (account.isPresent()){
-            account.get().setStatus(AccountStatus.ACTIVE);
-            this.accountRepository.save(account.get());
-        }
-        this.userRepository.save(user);
-    }
-
-    @Override
     public List<User> list(SearchUserDto dto) {
+        if (dto.getName() == null) dto.setName("");
+        if (dto.getEmail() == null) dto.setEmail("");
+        if (dto.getCpf() == null) dto.setCpf("");
 
         return this.userRepository.list(
                 dto.getId(),

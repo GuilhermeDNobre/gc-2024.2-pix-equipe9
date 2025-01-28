@@ -14,6 +14,7 @@ import com.ufc.pix.model.Transaction;
 import com.ufc.pix.repository.AccountRepository;
 import com.ufc.pix.repository.PixKeyRepository;
 import com.ufc.pix.repository.TransactionRepository;
+import com.ufc.pix.service.NotificationService;
 import com.ufc.pix.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,13 +28,15 @@ import java.util.UUID;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
+
     @Autowired
     private TransactionRepository transactionRepository;
     @Autowired
     private AccountRepository accountRepository;
-
     @Autowired
     private PixKeyRepository pixKeyRepository;
+    @Autowired
+    private NotificationService notification;
 
     @Override
     public void createById(CreateTransactionByIdDto dto) {
@@ -41,8 +44,8 @@ public class TransactionServiceImpl implements TransactionService {
             throw new BusinessException("transfer value is less than 1");
         }
 
-        var receiver = validateAccount(dto.getReceiverId());
-        var sender = validateAccount(dto.getSenderId());
+        var receiver = validateAccount(dto.getReceiverAccountId());
+        var sender = validateAccount(dto.getSenderAccountId());
 
         if (dto.getSendDate().isAfter(LocalDate.now())) {
             scheduleTransaction(new Transaction(receiver, sender, dto.getValue(), dto.getSendDate(), LocalDateTime.now()));
@@ -51,14 +54,17 @@ public class TransactionServiceImpl implements TransactionService {
 
         finishTransaction(new Transaction(receiver, sender, dto.getValue(), dto.getSendDate(), LocalDateTime.now()));
     }
-    private Account searchAccountByUserId(UUID userId){
+
+    private Account searchAccountByUserId(UUID userId) {
         return this.accountRepository.findByUserId(userId).orElseThrow(
                 () -> new BusinessException("User does not have an account", HttpStatus.NOT_FOUND));
     }
-    private PixKey searchPixKeyByKey(String key){
+
+    private PixKey searchPixKeyByKey(String key) {
         return this.pixKeyRepository.findByKeyValue(key).orElseThrow(
                 () -> new BusinessException("Pix key " + key + " not found ", HttpStatus.NOT_FOUND));
     }
+
     @Override
     public void createByPix(UUID userSenderId, CreateTransactionByPixDto dto) {
 
@@ -66,20 +72,29 @@ public class TransactionServiceImpl implements TransactionService {
             throw new BusinessException("transfer value is less than 1");
         }
 
-        //busca a conta vinculada a esse usuario
-        var sender = searchAccountByUserId(userSenderId);
-        //busca a chave pix informada
-        var pixKey = searchPixKeyByKey(dto.getPixKey());
-        //busca conta de recebimento
-        var receiver = validateAccount(pixKey.getAccount().getId());
-        validateAccount(sender.getId());
+        var sender = searchAccountByUserId(userSenderId);           //busca a conta vinculada a esse usuario
 
-        if (dto.getSendDate().isAfter(LocalDate.now())) {
-            scheduleTransaction(new Transaction(sender, receiver,dto.getValue(), dto.getSendDate(), LocalDateTime.now()));
+        var pixKey = searchPixKeyByKey(dto.getPixKey());            //busca a chave informada
+
+        var receiver = validateAccount(pixKey.getAccount().getId());//busca conta de recebimento
+
+        validateAccount(sender.getId());                            //valida conta do sender
+
+        if (isSameAccount(sender, receiver)) {
+            throw new BusinessException("The accounts are the same");
+        }
+
+        if (dto.getSendDate().isAfter(LocalDate.now())) {           //se data de envio for depois de hoje, agende
+            scheduleTransaction(new Transaction(sender, receiver, dto.getValue(), dto.getSendDate(), LocalDateTime.now()));
             return;
         }
 
+        //se não, finalize
         finishTransaction(new Transaction(sender, receiver, dto.getValue(), dto.getSendDate(), LocalDateTime.now()));
+    }
+
+    private Boolean isSameAccount(Account sender, Account receiver) {
+        return sender.getId().equals(receiver.getId());
     }
 
     private Account validateAccount(UUID accountId) {
@@ -92,6 +107,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
         return account;
     }
+
 
     private void updateBalance(Account sender, Account receiver, Double value) {
         if (sender.getBalance() < value) {
@@ -128,13 +144,16 @@ public class TransactionServiceImpl implements TransactionService {
         updateBalance(transaction.getSender(), transaction.getReceiver(), transaction.getTransferValue());
         transaction.setFinishedAt(LocalDateTime.now());
         transaction.setStatus(TransactionStatus.COMPLETED);
+        this.transactionRepository.save(transaction);
+
         Notification notificationMessage = new Notification();
+        notificationMessage.setUser(transaction.getReceiver().getUser());
         notificationMessage.setMessage("Transferência recebida no valor de R$ " + transaction.getTransferValue());
         notificationMessage.setFinishedAt(transaction.getFinishedAt());
-        NotificationServiceImpl notification = new NotificationServiceImpl();
         notification.saveNotification(notificationMessage);
-        this.transactionRepository.save(transaction);
     }
+
+
 
     private void scheduleTransaction(Transaction transaction) {
         transaction.setFinishedAt(null);

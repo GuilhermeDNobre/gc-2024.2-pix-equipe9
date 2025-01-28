@@ -18,10 +18,6 @@ public interface UserService {
 
     void delete(UUID userId);
 
-    void block(UUID id, String authorizationHeader);
-
-    void unblock(UUID id);
-
     List<User> list(SearchUserDto dto);
 
     Token login(LoginDto loginDto);

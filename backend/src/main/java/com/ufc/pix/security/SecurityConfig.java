@@ -1,6 +1,5 @@
 package com.ufc.pix.security;
 
-import org.hibernate.mapping.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,15 +15,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.ArrayList;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     @Autowired
     SecurityFilter securityFilter;
 
-    private final String[] allowedForLoggedIn = {//List of free routes for logged in users
+    private final String[] allowedForAdmin = {
             "/users/{userId}",
             "/pix/**",
             "/generate-reports/**"
@@ -35,6 +32,7 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/api-docs/**"
     };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -48,15 +46,16 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        /*.requestMatchers(freeRoutes).permitAll()//autorizando para rotas
-                        .requestMatchers(allowedForLoggedIn).hasRole("USER")//autorizando todas as rotas para logados*/
                         .requestMatchers(freeRoutes).permitAll()
-                        .requestMatchers("users/**").permitAll()
-                        .anyRequest().authenticated()
-                        //.requestMatchers(HttpMethod.POST, new String[]{"/users/login", "/users"}).permitAll()
-                        //.requestMatchers(HttpMethod.POST, new String[]{"/users/block/**", "/users/unblock/**"}).authenticated()
-                        //.requestMatchers(HttpMethod.GET, "users").authenticated()
 
+                        .requestMatchers(HttpMethod.DELETE,"users/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"users/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"users/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "users/login").permitAll()
+                        .requestMatchers(HttpMethod.GET,"users/**").hasRole("ADMIN")
+
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class) //adiciona filtro antes
                 .build();
@@ -68,7 +67,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

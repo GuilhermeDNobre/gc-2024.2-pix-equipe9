@@ -22,6 +22,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @RestControllerAdvice
@@ -55,6 +56,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<ResponseError> handleMissingRequestHeaderException(MissingRequestHeaderException ex, WebRequest request){
+        return buildResponse(ex.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ResponseError> handleNoSuchElementException(NoSuchElementException ex, WebRequest request){
         return buildResponse(ex.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
