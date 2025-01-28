@@ -13,10 +13,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CreateTransactionByIdDto {
     @NotNull(message = "Sender account id is required")
-    private UUID senderId;
+    private UUID senderAccountId;
 
     @NotNull(message = "Receiver account id is required")
-    private UUID receiverId;
+    private UUID receiverAccountId;
 
     @NotNull(message = "Value is required")
     private Double value;
