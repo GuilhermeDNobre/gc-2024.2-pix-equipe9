@@ -16,15 +16,11 @@ public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
-
     public List<Notification> getNotificationByUserId(UUID id) {
         return notificationRepository.findByUserId(id);
     }
 
-    public Notification saveNotification(Notification notification) {
-        if (notification.getNotificationId() == null) {
-            notification.setNotificationId(UUID.randomUUID());
-        }
-        return notificationRepository.save(notification);
+    public void saveNotification(Notification notification) {
+        notificationRepository.save(notification);
     }
 }
