@@ -3,8 +3,10 @@ package com.ufc.pix.doc;
 import com.ufc.pix.dto.*;
 import com.ufc.pix.enumeration.UserAccess;
 import com.ufc.pix.enumeration.UserStatus;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -198,52 +200,4 @@ public interface UserDoc {
     ResponseEntity<Void> delete(
             @Parameter(description = "ID do usuário", required = true) @RequestParam UUID userId
     );
-
-    @Operation(
-            summary = "Bloquear um usuário",
-            description = "Bloqueia um usuário no sistema.",
-            security = @SecurityRequirement(name = "Bearer")
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "Usuário bloqueado com sucesso",
-                    content = @Content()
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Usuário não encontrado",
-                    content = @Content()
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Erro inesperado",
-                    content = @Content()
-            )
-    })
-    ResponseEntity<Void> block(@Parameter(description = "ID do usuário a ser bloqueado", required = true) @RequestParam UUID userId, String authorizationHeader);
-
-    @Operation(
-            summary = "Desbloquear um usuário",
-            description = "Desbloqueia um usuário no sistema.",
-            security = @SecurityRequirement(name = "Bearer")
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "Usuário desbloqueado com sucesso",
-                    content = @Content()
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Usuário não encontrado",
-                    content = @Content()
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Erro inesperado",
-                    content = @Content()
-            )
-    })
-    ResponseEntity<Void> unblock(@Parameter(description = "ID do usuário a ser desbloqueado", required = true) @RequestParam UUID userId);
 }
