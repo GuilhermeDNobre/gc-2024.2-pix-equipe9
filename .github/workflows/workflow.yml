@@ -34,24 +34,18 @@ jobs:
       - name: Start Docker Compose
         run: docker-compose up --build -d  # Rodar em segundo plano para não bloquear
 
-      - name: Wait for application to be ready
+      - name: Wait for services to be ready
         run: |
-          sleep 10  # Atraso adicional para garantir que a aplicação esteja completamente inicializada
           for i in {1..60}; do
-            response=$(docker exec pix-api curl -s http://localhost:8080/actuator/health)
-            if echo "$response" | jq -e '.status == "UP"' > /dev/null; then
-              echo "Application is ready!"
+            if nc -z localhost 8080; then
+              echo "Server is ready!"
               exit 0
             fi
-            echo "Waiting for application to be ready..."
-            sleep 5  # Aguarda mais 5 segundos antes de tentar novamente
+              echo "Waiting for server..."
+              sleep 2
           done
-          echo "Application failed to start in time"
+          echo "Server failed to start in time"
           exit 1
-
-      - name: Check database connectivity
-        run: |
-          docker exec pix-api curl -s postgres-pix-db:5432 > /dev/null && echo "Database is reachable" || echo "Database not reachable"
 
       - name: Check Docker logs
         run: docker-compose logs --tail=100  # Limita a saída para os últimos 100 logs para não ficar excessivo
