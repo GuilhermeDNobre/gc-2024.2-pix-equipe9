@@ -85,18 +85,4 @@ public class UserController implements UserDoc {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/block/{id}")
-    @CrossOrigin
-    public ResponseEntity<Void> block(@PathVariable UUID id,@RequestHeader("Authorization") String authorizationHeader) {
-        this.userService.block(id, authorizationHeader);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/unblock/{id}")
-    @CrossOrigin
-    public ResponseEntity<Void> unblock(@PathVariable UUID id) {
-        this.userService.unblock(id);
-        return ResponseEntity.noContent().build();
-    }
-
 }
