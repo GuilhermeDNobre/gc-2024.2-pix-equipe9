@@ -10,6 +10,17 @@ spring:
   sql:
     init:
       mode: always  # Garante que os arquivos SQL sejam executados em todos os perfis
+  mail:
+    host: ${EMAIL_HOST:smtp.gmail.com}
+    port: ${EMAIL_PORT:587}
+    username: ${EMAIL_USERNAME:}
+    password: ${EMAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
   jpa:
     show-sql: true  # Exibe as consultas SQL no console
