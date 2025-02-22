@@ -1,5 +1,6 @@
 package com.ufc.pix.service.impl;
 
+import com.ufc.pix.Observer.EmailSubject;
 import com.ufc.pix.dto.CreateTransactionByIdDto;
 import com.ufc.pix.dto.CreateTransactionByPixDto;
 import com.ufc.pix.dto.SearchTrasactionDto;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class TransactionServiceImpl implements TransactionService {
+public class TransactionServiceImpl extends EmailSubject implements TransactionService {
 
     @Autowired
     private TransactionRepository transactionRepository;

@@ -1,6 +1,7 @@
 // NotificationService.java
 package com.ufc.pix.service.impl;
 
+import com.ufc.pix.Observer.EmailSubject;
 import com.ufc.pix.model.Notification;
 import com.ufc.pix.repository.NotificationRepository;
 import com.ufc.pix.service.NotificationService;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class NotificationServiceImpl implements NotificationService {
+public class NotificationServiceImpl extends EmailSubject implements NotificationService {
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -21,6 +22,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public void saveNotification(Notification notification) {
-        notificationRepository.save(notification);
+        var saved = notificationRepository.save(notification);
+        notifyObservers(saved.getUser().getEmail(),"Nova notificação do PIX",saved.getMessage());
     }
 }
