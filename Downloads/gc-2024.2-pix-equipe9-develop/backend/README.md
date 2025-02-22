@@ -63,7 +63,19 @@ PIX usando Java e conceitos de POO.
 - [Gradle](https://gradle.org/install/)
 - [Postgres](https://www.postgresql.org/)
 
+<<<<<<< HEAD:Downloads/gc-2024.2-pix-equipe9-develop/backend/README.md
 ## 🤝 Colaboradores
+=======
+<h3>Configure as variaveis de ambiente</h2>
+
+
+```yaml
+   url: ${DATABASE_URL}
+   username: ${DATABASE_USERNAME}
+   password: ${DATABASE_PASSWORD}
+```
+<h2 id="colab">🤝 Colaboradores</h2>
+>>>>>>> ce555a8ef769c62062eca6f1ca63a9bfb6b9e38f:README.md
 
 <table>
   <tr>
@@ -101,9 +113,15 @@ PIX usando Java e conceitos de POO.
     </td>
     <td align="center">
       <a href="https://github.com/amandadeoliveira">
+<<<<<<< HEAD:Downloads/gc-2024.2-pix-equipe9-develop/backend/README.md
         <img src="https://avatars.githubusercontent.com/u/48298630?v=4" width="100px;" alt="Cristiano Mendes Profile Picture"/><br>
         <sub><b>amandadeoliveira</b></sub>
+=======
+        <img src="https://avatars.githubusercontent.com/u/48298630?v=4" width="100px;" alt="NdaDev Profile Picture"/><br>
+        <sub><b>NdaDev</b></sub>
+>>>>>>> ce555a8ef769c62062eca6f1ca63a9bfb6b9e38f:README.md
       </a>
     </td>
   </tr>
+  <tr>
 </table>
