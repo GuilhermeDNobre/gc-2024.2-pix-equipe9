@@ -7,6 +7,7 @@ CREATE TABLE accounts (
     password VARCHAR NOT NULL,
     user_id UUID UNIQUE,
     status VARCHAR,
+    daily_value_limit DOUBLE,
     CONSTRAINT fk_account_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
