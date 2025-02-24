@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -196,5 +197,13 @@ public class TransactionServiceImpl extends EmailSubject implements TransactionS
 //        }
         transaction.setStatus(TransactionStatus.CANCELED);
         this.transactionRepository.save(transaction);
+    }
+
+    public Transaction getLastTransactionReceived(UUID accountId) {
+        List<Transaction> transactions = transactionRepository.findAllByUserId(accountId);
+        return transactions.stream()
+                .filter(transaction -> transaction.getReceiver().getId().equals(accountId))
+                .max(Comparator.comparing(Transaction::getCreatedAt))
+                .orElseThrow(() -> new IllegalArgumentException("No transactions found for the account"));
     }
 }
