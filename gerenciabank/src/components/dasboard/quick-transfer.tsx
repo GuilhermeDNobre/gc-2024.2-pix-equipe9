@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { TransferModal } from "./transfer-modal"
 
 const recentContacts = [
   { id: 1, name: "Alice", avatar: "/placeholder.svg?height=32&width=32" },
@@ -15,7 +16,7 @@ export default function QuickTransfer() {
         <CardTitle>Quick Transfer</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col">
-        <div className="flex space-x-4 mb-4 justify-evenly ">
+        <div className="flex space-x-4 mb-4 justify-evenly mt-6">
           {recentContacts.map((contact) => (
             <Button key={contact.id} variant="outline" className="flex flex-col items-center p-2">
               <Avatar className="h-12 w-12 mb-2">
@@ -26,7 +27,7 @@ export default function QuickTransfer() {
             </Button>
           ))}
         </div>
-        <Button className="w-full mt-52">New Transfer</Button>
+        <TransferModal className="mt-48"/>
       </CardContent>
     </Card>
   )

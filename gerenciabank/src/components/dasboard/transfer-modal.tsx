@@ -1,25 +1,23 @@
 "use client"
 
 import { useState } from "react"
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog"
-import { Button } from "../ui/button"
-import { Label } from "../ui/label"
-import { Input } from "../ui/input"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 
-export function TransferModal() {
+interface TransferModalProps {
+  className?: string
+}
+
+export function TransferModal({ className }: TransferModalProps) {
   const [open, setOpen] = useState(false)
   const [method, setMethod] = useState("")
   const [amount, setAmount] = useState("")
+  const [key, setKey] = useState("")
 
   const handleTransfer = () => {
-    // Here you would implement the actual transfer logic
     console.log(`Transferring ${amount} via ${method}`)
     setOpen(false)
   }
@@ -27,7 +25,9 @@ export function TransferModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">New Transfer</Button>
+        <Button variant="default" className={className}>
+          New Transfer
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -51,6 +51,20 @@ export function TransferModal() {
             </Select>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="pixKey" className="text-right">
+              Chave pix
+            </Label>
+            <Input
+              id="pixKey"
+              type="string"
+              placeholder="Enter pix Key"
+              className="col-span-3"
+              value={key}
+              onChange={(e) => setKey(e.target.value)}
+            />
+          </div>
+        </div>
+          <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="amount" className="text-right">
               Amount
             </Label>
@@ -63,7 +77,6 @@ export function TransferModal() {
               onChange={(e) => setAmount(e.target.value)}
             />
           </div>
-        </div>
         <Button onClick={handleTransfer} disabled={!method || !amount}>
           Transfer
         </Button>

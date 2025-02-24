@@ -13,7 +13,7 @@ export default function RecentTransactions() {
         <CardTitle>Recent Transactions</CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="space-y-2">
+        <ul className="space-y-2 mt-6">
           {transactions.map((transaction) => (
             <li key={transaction.id} className="flex justify-between items-center">
               <div>
