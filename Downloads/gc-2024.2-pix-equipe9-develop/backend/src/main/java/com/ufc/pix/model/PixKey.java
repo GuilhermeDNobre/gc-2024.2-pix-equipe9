@@ -36,4 +36,12 @@ public class PixKey {
                 getAccount().getId()
         );
     }
+
+    public void updateKeyValue(String newKeyValue) {
+        this.keyValue = newKeyValue;
+    }
+
+    public void updateAccount(Account newAccount) {
+        this.account = newAccount;
+    }
 }

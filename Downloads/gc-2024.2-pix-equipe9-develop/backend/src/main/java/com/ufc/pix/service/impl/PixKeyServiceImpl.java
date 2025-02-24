@@ -3,6 +3,7 @@ package com.ufc.pix.service.impl;
 import com.ufc.pix.dto.ViewPixKeyDto;
 import com.ufc.pix.enumeration.KeyType;
 import com.ufc.pix.exception.BusinessException;
+import com.ufc.pix.model.Account;
 import com.ufc.pix.model.PixKey;
 import com.ufc.pix.model.User;
 import com.ufc.pix.repository.AccountRepository;
@@ -99,5 +100,21 @@ public class PixKeyServiceImpl implements PixKeyService {
         return this.pixKeyRepository.findAll().stream().map(PixKey::toView).toList();
     }
 
+    public void updatePixKey(UUID pixKeyId, String newKeyValue, UUID newAccountId) {
+        PixKey pixKey = pixKeyRepository.findById(pixKeyId).orElseThrow(
+                () -> new BusinessException("Chave Pix não encontrada", HttpStatus.NOT_FOUND)
+        );
 
+        // Atualiza o valor da chave
+        pixKey.updateKeyValue(newKeyValue);
+
+        // Busca a nova conta pelo ID
+        Account newAccount = accountRepository.findById(newAccountId).orElseThrow(
+                () -> new BusinessException("Conta não encontrada", HttpStatus.NOT_FOUND)
+        );
+
+        // Atualiza a conta associada
+        pixKey.updateAccount(newAccount);
+        pixKeyRepository.save(pixKey); // Salva as alterações
+    }
 }
