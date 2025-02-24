@@ -42,6 +42,8 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private AccountStatus status;
 
+    private Double dailyValueLimit = 1000.00;
+
     public ViewAccountDto toView(){
         return new ViewAccountDto(
                 getId(),

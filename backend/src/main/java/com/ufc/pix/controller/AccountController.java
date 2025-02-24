@@ -1,24 +1,16 @@
 package com.ufc.pix.controller;
 
 import com.ufc.pix.doc.AccountDoc;
-import com.ufc.pix.dto.CreateAccountDto;
-import com.ufc.pix.dto.CreateTransactionByIdDto;
-import com.ufc.pix.dto.UpdateAccountDto;
-import com.ufc.pix.dto.ViewAccountDto;
+import com.ufc.pix.dto.*;
 import com.ufc.pix.model.Account;
-import com.ufc.pix.model.Transaction;
-import com.ufc.pix.repository.TransactionRepository;
 import com.ufc.pix.service.impl.AccountService;
-import com.ufc.pix.repository.AccountRepository;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -49,6 +41,13 @@ public class AccountController implements AccountDoc {
     public ResponseEntity<ViewAccountDto> getOneAccount(@PathVariable(value = "id") UUID id) {
         return ResponseEntity.ok(this.accountService.findById(id));
     }
+
+    @PutMapping("/limit/{accountId}")
+    public ResponseEntity<Void> updateDailyLimit(@PathVariable UUID accountId, @RequestBody UpdateDailyLimitDto dto) {
+        this.accountService.updateDailyLimit(accountId, dto);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @PutMapping("/accounts/{id}")
     public ResponseEntity<Void> updateAccount(@PathVariable UUID id, @RequestBody @Valid UpdateAccountDto accountDTO) {

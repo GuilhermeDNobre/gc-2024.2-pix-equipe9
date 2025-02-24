@@ -6,7 +6,17 @@ spring:
     username: ${DB_USERNAME:postgres}                       # Variável de ambiente para o nome de usuário do banco, com valor default
     password: ${DB_PASSWORD:qwe123}                         # Variável de ambiente para a senha do banco, com valor default
     driver-class-name: org.postgresql.Driver
-
+  mail:
+    host: ${EMAIL_HOST:smtp.gmail.com}
+    port: ${EMAIL_PORT:587}
+    username: ${EMAIL_USERNAME:}
+    password: ${EMAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   jpa:
     show-sql: false                                          # Em produção, é recomendado desabilitar a exibição de SQL
     generate-ddl: false                                      # Não gerar DDL automaticamente em produção
