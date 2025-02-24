@@ -29,7 +29,8 @@ public class SecurityConfig {
     private final String[] allowedForAdmin = {
             "/users/{userId}",
             "/pix/**",
-            "/generate-reports/**"
+            "/generate-reports/**",
+            "/login-activity/**",
     };
     private final String[] freeRoutes = {//List of free routes
             "/h2/**",
