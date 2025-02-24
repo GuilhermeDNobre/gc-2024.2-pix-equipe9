@@ -5,6 +5,7 @@ import com.ufc.pix.enumeration.AccountStatus;
 import com.ufc.pix.enumeration.UserStatus;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.repository.AccountRepository;
+import com.ufc.pix.repository.LoginActivityRepository;
 import com.ufc.pix.repository.UserRepository;
 import com.ufc.pix.model.User;
 import com.ufc.pix.service.TokenService;
@@ -31,6 +32,10 @@ public class UserServiceImpl implements UserService {
     private TokenService tokenService;
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private LoginActivityServiceImpl loginActivityServiceImpl;
+
     @Override
     public User create(CreateUserDto userDto) {
 
@@ -58,6 +63,7 @@ public class UserServiceImpl implements UserService {
         userToSave.setBirthDate(userDto.getBirthDate());
         userToSave.setPassword(new BCryptPasswordEncoder().encode(userDto.getPassword()));
         userToSave.setAccount(null);
+
         return userRepository.save(userToSave);
     }
 
@@ -140,7 +146,11 @@ public class UserServiceImpl implements UserService {
         if (!user.getStatus().equals(UserStatus.ACTIVE)){
             throw new BusinessException("User is "+user.getStatus());
         }
+
         var tokenKey = this.tokenService.generateToken(user);
+
+        loginActivityServiceImpl.registerLogin(user.getId());
+
         return new Token(tokenKey);
     }
 
