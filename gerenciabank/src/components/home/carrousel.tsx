@@ -6,10 +6,10 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel"
 
-import Amico1Icon from "../../app/assets/Investment data-amico.svg";
-import Amico2Icon from "../../app/assets/Investment data-bro.svg";
-import Amico3Icon from "../../app/assets/Revenue-amico.svg";
-import Amico4Icon from "../../app/assets/Wallet-amico.svg";
+import Amico1Icon from "../../assets/Investment data-amico.svg";
+import Amico2Icon from "../../assets/Investment data-bro.svg";
+import Amico3Icon from "../../assets/Revenue-amico.svg";
+import Amico4Icon from "../../assets/Wallet-amico.svg";
 
 export function Carrousel() {
   
