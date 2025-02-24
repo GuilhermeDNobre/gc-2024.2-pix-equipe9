@@ -47,7 +47,7 @@ export default function Register() {
     data.access = "USER"
     const result = await UserService.register(data)
     if(result?.success){
-      window.location.href = './'
+      window.location.href = '/login'
     } 
   };
 
@@ -97,7 +97,7 @@ export default function Register() {
         <CardFooter>
           <p>
             Já possui login?{" "}
-            <Link href="../" className="text-purple-600">
+            <Link href="/login" className="text-purple-600">
               Entre
             </Link>
           </p>

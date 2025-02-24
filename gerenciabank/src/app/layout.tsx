@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Carrousel } from "@/components/home/carrousel";
-import { ReactNode } from "react";
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -15,24 +14,17 @@ export const metadata: Metadata = {
   description: "",
 };
 
-type RootLayoutProps = {
-    children: ReactNode;    
-}
-
-export default function RootLayout({children}: RootLayoutProps) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} antialiased bg-zinc-50`}
+        className={`${geistSans.variable} antialiased bg-zinc-50 w-screen h-screen`}
       >
-        <main className="h-screen w-full flex">
-          <div className="h-full w-full p-16 m- flex justify-center items-center">
-            <Carrousel />
-          </div>
-          <section className="flex h-full max-w-3xl w-full p-4 items-center justify-center">
-            {children}
-          </section>
-        </main>
+        {children}
       </body>
     </html>
   );
