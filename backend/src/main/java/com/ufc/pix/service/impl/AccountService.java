@@ -3,6 +3,7 @@ package com.ufc.pix.service.impl;
 import com.ufc.pix.Observer.EmailSubject;
 import com.ufc.pix.dto.CreateAccountDto;
 import com.ufc.pix.dto.UpdateAccountDto;
+import com.ufc.pix.dto.UpdateDailyLimitDto;
 import com.ufc.pix.dto.ViewAccountDto;
 import com.ufc.pix.enumeration.AccountStatus;
 import com.ufc.pix.enumeration.UserStatus;
@@ -58,6 +59,7 @@ public class AccountService extends EmailSubject {
         accountToSave.setNumber(accountDTO.getNumber());
         accountToSave.setPixKeys(null);
         accountToSave.setStatus(AccountStatus.ACTIVE);
+        accountToSave.setDailyValueLimit(1000.00);
         accountToSave.setPassword(passwordEncoder.encode(accountDTO.getPassword())); //adicione senha com hash
 
         var savedAccount = accountRepository.save(accountToSave);
@@ -82,6 +84,18 @@ public class AccountService extends EmailSubject {
 
     public Optional<Account> getOneAccount(UUID id) {
         return Optional.ofNullable(accountRepository.findAccountsById(id));
+    }
+
+    public void updateDailyLimit(UUID accountId, UpdateDailyLimitDto dto) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new BusinessException("Account not found", HttpStatus.NOT_FOUND));
+
+        if (dto.getDailyValueLimit() > account.getDailyValueLimit() * 2) {
+            throw new BusinessException("The requested limit was not approved");
+        }
+
+        account.setDailyValueLimit(dto.getDailyValueLimit());
+        accountRepository.save(account);
     }
 
     public void updateAccount(UUID id, UpdateAccountDto dto) {

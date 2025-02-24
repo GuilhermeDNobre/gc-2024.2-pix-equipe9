@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -48,6 +49,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
        """)
     List<Transaction> findAllByUserId(@Param("userId") UUID userId);
 
+    @Query("SELECT COALESCE(SUM(t.transferValue), 0) FROM Transaction t WHERE t.sender.id = :senderId AND t.sendDate = :sendDate")
+    Double sumTransferValueBySenderIdAndSendDate(@Param("senderId") UUID senderId, @Param("sendDate") LocalDate sendDate);
 
     List<Transaction> findByStatus(TransactionStatus status);
 }

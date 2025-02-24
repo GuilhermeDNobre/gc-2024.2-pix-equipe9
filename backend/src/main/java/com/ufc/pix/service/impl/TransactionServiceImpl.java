@@ -8,10 +8,7 @@ import com.ufc.pix.dto.ViewTransactionDto;
 import com.ufc.pix.enumeration.AccountStatus;
 import com.ufc.pix.enumeration.TransactionStatus;
 import com.ufc.pix.exception.BusinessException;
-import com.ufc.pix.model.Account;
-import com.ufc.pix.model.Notification;
-import com.ufc.pix.model.PixKey;
-import com.ufc.pix.model.Transaction;
+import com.ufc.pix.model.*;
 import com.ufc.pix.repository.AccountRepository;
 import com.ufc.pix.repository.PixKeyRepository;
 import com.ufc.pix.repository.TransactionRepository;
@@ -47,6 +44,11 @@ public class TransactionServiceImpl extends EmailSubject implements TransactionS
 
         var receiver = validateAccount(dto.getReceiverAccountId());
         var sender = validateAccount(dto.getSenderAccountId());
+
+        // Define a data da transação: se for agendada, usa a data informada; caso contrário, hoje
+        LocalDate transactionDate = dto.getSendDate().isAfter(LocalDate.now()) ? dto.getSendDate() : LocalDate.now();
+        // Verifica se o novo valor ultrapassa o limite diário
+        checkDailyTransactionLimit(sender, transactionDate, dto.getValue());
 
         if (dto.getSendDate().isAfter(LocalDate.now())) {
             scheduleTransaction(new Transaction(receiver, sender, dto.getValue(), dto.getSendDate(), LocalDateTime.now()));
@@ -85,6 +87,11 @@ public class TransactionServiceImpl extends EmailSubject implements TransactionS
             throw new BusinessException("The accounts are the same");
         }
 
+        // Define a data da transação: se for agendada, usa a data informada; caso contrário, hoje
+        LocalDate transactionDate = dto.getSendDate().isAfter(LocalDate.now()) ? dto.getSendDate() : LocalDate.now();
+        // Verifica se o novo valor ultrapassa o limite diário
+        checkDailyTransactionLimit(sender, transactionDate, dto.getValue());
+
         if (dto.getSendDate().isAfter(LocalDate.now())) {           //se data de envio for depois de hoje, agende
             scheduleTransaction(new Transaction(sender, receiver, dto.getValue(), dto.getSendDate(), LocalDateTime.now()));
             return;
@@ -92,6 +99,13 @@ public class TransactionServiceImpl extends EmailSubject implements TransactionS
 
         //se não, finalize
         finishTransaction(new Transaction(sender, receiver, dto.getValue(), dto.getSendDate(), LocalDateTime.now()));
+    }
+
+    private void checkDailyTransactionLimit(Account sender, LocalDate transactionDate, double newTransactionValue) {
+        double totalValue = transactionRepository.sumTransferValueBySenderIdAndSendDate(sender.getId(), transactionDate);
+        if (totalValue + newTransactionValue > sender.getDailyValueLimit()) {
+            throw new BusinessException("Daily transaction limit per amount reached", HttpStatus.BAD_REQUEST);
+        }
     }
 
     private Boolean isSameAccount(Account sender, Account receiver) {

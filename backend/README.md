@@ -50,6 +50,16 @@ PIX usando Java e conceitos de POO.
       <li>Ferramenta para gerenciar versões do banco de dados, garantindo integridade e evitando erros.</li>
     </ul>
   </li>
+  <li><strong>Github Actions</strong>
+    <ul>
+      <li>Usamos CI/CD com workflows do github</li>
+    </ul>
+  </li>
+  <li><strong>Docker</strong>
+    <ul>
+      <li>Docker para facilitar em deploys</li>
+    </ul>
+  </li>
 </ul>
 
 
@@ -63,7 +73,7 @@ PIX usando Java e conceitos de POO.
 - [Gradle](https://gradle.org/install/)
 - [Postgres](https://www.postgresql.org/)
 
-## 🤝 Colaboradores
+<h2 id="colab"> 🤝 Colaboradores</h2>
 
 <table>
   <tr>
@@ -97,12 +107,6 @@ PIX usando Java e conceitos de POO.
       <a href="https://github.com/FGabriel-Lima">
         <img src="https://avatars.githubusercontent.com/u/95498571?v=4" width="100px;" alt="FGabriel-Lima Profile Picture"/><br>
         <sub><b>FGabriel-Lima</b></sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/amandadeoliveira">
-        <img src="https://avatars.githubusercontent.com/u/48298630?v=4" width="100px;" alt="Cristiano Mendes Profile Picture"/><br>
-        <sub><b>amandadeoliveira</b></sub>
       </a>
     </td>
   </tr>

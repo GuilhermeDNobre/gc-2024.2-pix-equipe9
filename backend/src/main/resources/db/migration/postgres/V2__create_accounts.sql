@@ -6,5 +6,6 @@ CREATE TABLE accounts (
     balance NUMERIC DEFAULT 0.0 NOT NULL,
     password VARCHAR NOT NULL,
     user_id UUID UNIQUE,
+    daily_value_limit DOUBLE,
     status VARCHAR
 );
