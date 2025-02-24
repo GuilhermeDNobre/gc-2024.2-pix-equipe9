@@ -1,0 +1,8 @@
+ALTER TABLE login_activity
+DROP COLUMN location,  -- Remove a coluna antiga
+    ADD COLUMN city VARCHAR(255) NOT NULL,
+    ADD COLUMN region VARCHAR(255) NOT NULL,
+    ADD COLUMN country VARCHAR(255) NOT NULL,
+    ADD COLUMN org VARCHAR(255) NOT NULL,
+    ADD COLUMN postal VARCHAR(255) NOT NULL,
+    ADD COLUMN timezone VARCHAR(255) NOT NULL;
