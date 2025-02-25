@@ -2,76 +2,47 @@
 <h1 align="center" style="font-weight: bold;">Projeto PIX💻</h1>
 
 <p align="center">
- <a href="#technologies">Tecnologias</a> • 
- <a href="#started">Começando</a> • 
  <a href="#colab">Colaboradores</a>
 </p>
 
-<b>Objetivos</b>
+
+## 📌 Sobre o Projeto
+
+Este projeto foi desenvolvido como parte da disciplina de **Gerência de Configuração**. Durante o desenvolvimento, foram abordados os seguintes tópicos e ferramentas:
+
+- **Git e GitHub**: Controle de versão e hospedagem de código.
+- **Git Flow**: Estratégia de ramificação para gerenciamento de releases.
+- **Code Review**: Práticas de revisão de código para melhoria contínua.
+- **GitHub Actions**: Implementação de CI/CD para automação de builds e deploys.
+- **Docker e Docker Compose**: Containerização e orquestração de ambientes.
+- **Terraform**: Infraestrutura como Código (IaC) para deploy na Google Cloud Platform.
+
+## 🎯 Objetivos
+
 - Simular um projeto de desenvolvimento de software.
-- Entender os diversos ambientes de desenvolvimento:
-dev, hom e prd.
+- Compreender os diferentes ambientes de desenvolvimento: `dev`, `hom` e `prd`.
 - Participar de revisões de código.
-- Utilizar as principais ferramentas para gerenciamento de
-versões em projetos de software.
-- Construir um sistema para algumas funcionalidades do
-PIX usando Java e conceitos de POO.
+- Utilizar ferramentas de gerenciamento de versões em projetos de software.
+- Desenvolver funcionalidades do PIX utilizando **Java** e conceitos de **POO**.
+- Implementar práticas de **CI/CD** e **IaC** para deploy automatizado.
+- Deploy no google cloud
 
-<h2 id="technologies">💻 Tecnologias</h2>
+## 💻 Tecnologias Utilizadas
 
-<ul>
-  <li><strong>Java</strong>
-    <ul>
-      <li>Linguagem de programação utilizada para desenvolvimento do backend.</li>
-    </ul>
-  </li>
-  <li><strong>Spring Boot 3</strong>
-    <ul>
-      <li>Framework que facilita o desenvolvimento de aplicações Java, incluindo APIs RESTful.</li>
-    </ul>
-  </li>
-  <li><strong>Spring Data JPA</strong>
-    <ul>
-      <li>Módulo do Spring que simplifica a integração com bancos de dados, oferecendo abstrações para acesso e manipulação de dados.</li>
-    </ul>
-  </li>
-  <li><strong>PostgreSQL</strong>
-    <ul>
-      <li>Banco de dados relacional utilizado para armazenar e gerenciar informações.</li>
-    </ul>
-  </li>
-  <li><strong>Gradle</strong>
-    <ul>
-      <li>Ferramenta de automação para gerenciar dependências e processos do projeto.</li>
-    </ul>
-  </li>
-  <li><strong>Flyway Migrations</strong>
-    <ul>
-      <li>Ferramenta para gerenciar versões do banco de dados, garantindo integridade e evitando erros.</li>
-    </ul>
-  </li>
-</ul>
+- **Java**: Linguagem de programação para o backend.
+- **Spring Boot 3**: Framework para criação de aplicações Java.
+- **Spring Data JPA**: Abstração para interação com bancos de dados relacionais.
+- **PostgreSQL**: Sistema de gerenciamento de banco de dados relacional.
+- **Gradle**: Ferramenta de automação e gerenciamento de dependências.
+- **Flyway**: Controle de versão do banco de dados.
+- **Git e GitHub**: Controle de versão e colaboração em código.
+- **Git Flow**: Estratégia de branching para gerenciamento de releases.
+- **GitHub Actions**: Automação de workflows de CI/CD.
+- **Docker e Docker Compose**: Containerização e orquestração de serviços.
+- **Terraform**: Provisionamento de infraestrutura na nuvem (Google Cloud Platform).
 
 
-
-
-<h2 id="started">🚀 Começando</h2>
-
-<h3>Pre-Requisitos</h3>
-
-- [Java 17](https://www.java.com/pt-BR/download/manual.jsp)
-- [Gradle](https://gradle.org/install/)
-- [Postgres](https://www.postgresql.org/)
-
-<h3>Configure as variaveis de ambiente</h2>
-
-
-```yaml
-   url: ${DATABASE_URL}
-   username: ${DATABASE_USERNAME}
-   password: ${DATABASE_PASSWORD}
-```
-<h2 id="colab">🤝 Colaboradores</h2>
+<h2 id="colab"> 🤝 Colaboradores</h2>
 
 <table>
   <tr>
@@ -107,12 +78,5 @@ PIX usando Java e conceitos de POO.
         <sub><b>FGabriel-Lima</b></sub>
       </a>
     </td>
-    <td align="center">
-      <a href="https://github.com/amandadeoliveira">
-        <img src="https://avatars.githubusercontent.com/u/48298630?v=4" width="100px;" alt="NdaDev Profile Picture"/><br>
-        <sub><b>NdaDev</b></sub>
-      </a>
-    </td>
   </tr>
-  <tr>
 </table>

@@ -1,0 +1,55 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - staging
+      - develop
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  CI-Pipeline:
+    runs-on: ubuntu-latest
+    env:
+      JWT_SECRET: qwe123
+      SPRING_PROFILES_ACTIVE: prod
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Start Docker Compose
+        run: docker-compose up --build -d  # Rodar em segundo plano para não bloquear
+
+      - name: Wait for services to be ready
+        run: |
+          for i in {1..60}; do
+            if nc -z localhost 8080; then
+              echo "Server is ready!"
+              exit 0
+            fi
+              echo "Waiting for server..."
+              sleep 2
+          done
+          echo "Server failed to start in time"
+          exit 1
+
+      - name: Check Docker logs
+        run: docker-compose logs --tail=100  # Limita a saída para os últimos 100 logs para não ficar excessivo
+
+      - name: Stop Docker Compose
+        if: always()
+        run: docker-compose down
