@@ -9,7 +9,9 @@ import com.ufc.pix.enumeration.AccountStatus;
 import com.ufc.pix.enumeration.UserStatus;
 import com.ufc.pix.exception.BusinessException;
 import com.ufc.pix.model.Account;
+import com.ufc.pix.model.Transaction;
 import com.ufc.pix.repository.AccountRepository;
+import com.ufc.pix.repository.TransactionRepository;
 import com.ufc.pix.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,9 @@ public class AccountService extends EmailSubject {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private TransactionServiceImpl transactionService;
 
     public void createAccount(CreateAccountDto accountDTO) {
         var account = this.accountRepository.findByAgencyAndNumber(accountDTO.getAgency(), accountDTO.getNumber());
@@ -139,6 +144,7 @@ public class AccountService extends EmailSubject {
 
     public void reportAccount(UUID id) {
         var account = this.accountRepository.findById(id).orElseThrow(() -> new BusinessException("Account not found", HttpStatus.NOT_FOUND));
+        reverseTransaction(account.getId());
         switch (account.getStatus()) {
             case ACTIVE:
                 account.setStatus(AccountStatus.SUSPICIOUS);
@@ -153,5 +159,22 @@ public class AccountService extends EmailSubject {
             default:
                 throw new BusinessException("Invalid status");
         }
+    }
+
+    public void reverseTransaction(UUID id) {
+        var account = this.accountRepository.findAccountsById(id);
+        // Estornar a última transação recebida
+        Transaction lastTransaction = transactionService.getLastTransactionReceived(account.getId());
+        Account senderAccount = lastTransaction.getSender();
+        Account receiverAccount = lastTransaction.getReceiver();
+        double amount = lastTransaction.getTransferValue();
+
+        // Reverter a transação
+        senderAccount.setBalance(senderAccount.getBalance() + amount);
+        receiverAccount.setBalance(receiverAccount.getBalance() - amount);
+
+        // Salvar as contas atualizadas
+        accountRepository.save(senderAccount);
+        accountRepository.save(receiverAccount);
     }
 }
